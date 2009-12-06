@@ -5,6 +5,7 @@ require File.expand_path(File.join(File.dirname(__FILE__) + "/..", 'vendor', 'ge
 Bundler.require_env
 
 require 'AWS'
+require 'net/ssh'
 require 'hugo/rds'
 require 'hugo/elb'
 require 'hugo/ec2'
