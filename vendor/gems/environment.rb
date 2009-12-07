@@ -8,10 +8,12 @@ module Bundler
 
   $LOAD_PATH.unshift File.expand_path("#{dir}/gems/xml-simple-1.0.12/bin")
   $LOAD_PATH.unshift File.expand_path("#{dir}/gems/xml-simple-1.0.12/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/net-ssh-2.0.16/bin")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/net-ssh-2.0.16/lib")
   $LOAD_PATH.unshift File.expand_path("#{dir}/gems/rspec-1.2.9/bin")
   $LOAD_PATH.unshift File.expand_path("#{dir}/gems/rspec-1.2.9/lib")
-  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/amazon-ec2-0.7.3/bin")
-  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/amazon-ec2-0.7.3/lib")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/amazon-ec2-0.7.4/bin")
+  $LOAD_PATH.unshift File.expand_path("#{dir}/gems/amazon-ec2-0.7.4/lib")
 
   @gemfile = "#{dir}/../../Gemfile"
 
@@ -20,10 +22,12 @@ module Bundler
   @bundled_specs = {}
   @bundled_specs["xml-simple"] = eval(File.read("#{dir}/specifications/xml-simple-1.0.12.gemspec"))
   @bundled_specs["xml-simple"].loaded_from = "#{dir}/specifications/xml-simple-1.0.12.gemspec"
+  @bundled_specs["net-ssh"] = eval(File.read("#{dir}/specifications/net-ssh-2.0.16.gemspec"))
+  @bundled_specs["net-ssh"].loaded_from = "#{dir}/specifications/net-ssh-2.0.16.gemspec"
   @bundled_specs["rspec"] = eval(File.read("#{dir}/specifications/rspec-1.2.9.gemspec"))
   @bundled_specs["rspec"].loaded_from = "#{dir}/specifications/rspec-1.2.9.gemspec"
-  @bundled_specs["amazon-ec2"] = eval(File.read("#{dir}/specifications/amazon-ec2-0.7.3.gemspec"))
-  @bundled_specs["amazon-ec2"].loaded_from = "#{dir}/specifications/amazon-ec2-0.7.3.gemspec"
+  @bundled_specs["amazon-ec2"] = eval(File.read("#{dir}/specifications/amazon-ec2-0.7.4.gemspec"))
+  @bundled_specs["amazon-ec2"].loaded_from = "#{dir}/specifications/amazon-ec2-0.7.4.gemspec"
 
   def self.add_specs_to_loaded_specs
     Gem.loaded_specs.merge! @bundled_specs
