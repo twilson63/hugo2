@@ -6,24 +6,26 @@ module Hugo
     LISTENERS = [{"InstancePort"=>"8080", "Protocol"=>"HTTP", "LoadBalancerPort"=>"80"}, 
       {"InstancePort"=>"8443", "Protocol"=>"TCP", "LoadBalancerPort"=>"443"}]
     
+    attr_accessor :name, :uri, :listeners, :instances, :zones, :create_time
+    
     def initialize(options = {} )
-      self.name = options[:name] || options["LoadBalancerName"]
-      self.uri = options["DNSName"] || nil
+      @name = options[:name] || options["LoadBalancerName"]
+      @uri = options["DNSName"] || nil
       if options["Instances"] and options["Instances"]["member"]
-        self.instances = options["Instances"]["member"].map { |i| i.InstanceId }
+        @instances = options["Instances"]["member"].map { |i| i.InstanceId }
       end
       if options["AvailabilityZones"] and options["AvailabilityZones"]["member"]
-        self.zones = options["AvailabilityZones"]["member"]
+        @zones = options["AvailabilityZones"]["member"]
       else
-        self.zones = options["zones"] || ZONES
+        @zones = options["zones"] || ZONES
       end
       if options["Listeners"] and options["Listeners"]["member"]
-        self.listeners = options["Listeners"]["member"]
+        @listeners = options["Listeners"]["member"]
       else
-        self.listeners = options["listeners"] || LISTENERS
+        @listeners = options["listeners"] || LISTENERS
       end
       if options["CreatedTime"]
-        self.create_time = options["CreatedTime"]
+        @create_time = options["CreatedTime"]
       end
     end
     
@@ -50,8 +52,8 @@ module Hugo
       @elb = AWS::ELB::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
       @elb.register_instances_with_load_balancer(
         :instances => [instance],
-        :load_balancer_name => self.name)
-      self.instances << instance
+        :load_balancer_name => @name)
+      @instances << instance
       self
     end
     
@@ -59,8 +61,8 @@ module Hugo
       @elb = AWS::ELB::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
       @elb.deregister_instances_from_load_balancer(
         :instances => [instance],
-        :load_balancer_name => self.name)
-      self.instances = self.instances - [instance]
+        :load_balancer_name => @name)
+      @instances = @instances - [instance]
       self
       
     end
@@ -79,54 +81,5 @@ module Hugo
     end
     
     
-    def name
-      @name
-    end
-    
-    def name=(name)
-      @name = name
-    end
-
-    def uri
-      @uri
-    end
-    
-    def uri=(uri)
-      @uri = uri
-    end
-    
-    def listeners
-      @listeners
-    end
-    
-    def listeners=(listeners)
-      @listeners = listeners
-    end
-    
-    def instances
-      @instances
-    end
-    
-    def instances=(instances)
-      @instances = instances
-    end
-    
-    
-    def zones
-      @zones
-    end
-    
-    def zones=(zones)
-      @zones = zones
-    end
-    
-    def create_time
-      @create_time
-    end
-    
-    def create_time=(create_time)
-      @create_time = create_time
-    end
-
   end
 end

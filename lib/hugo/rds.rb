@@ -6,20 +6,23 @@ module Hugo
     INSTANCE_CLASS = "db.m1.small"
     ZONE = "us-east-1c"
     
+    attr_accessor :db, :uri, :server, :user, :pwd, :instance_class, 
+                  :zone, :size, :status, :create_time
+    
     def initialize(options={})
       # create instance
       
-      self.server = options[:server] || options["DBInstanceIdentifier"]
-      self.db = options[:db] || options["DBName"]
-      self.user = options[:user] || options["MasterUsername"]
-      self.pwd = options[:pwd] || "****"
-      self.size = options[:size] || options["AllocatedStorage"] || DEFAULT_SIZE
-      self.instance_class = options[:instance_class] || options["DBInstanceClass"] || INSTANCE_CLASS
-      self.zone = options[:zone] || options["AvailabilityZone"] || ZONE
-      self.status = options["DBInstanceStatus"] || "pending"
-      self.create_time = options["InstanceCreateTime"] || nil
+      @server = options[:server] || options["DBInstanceIdentifier"]
+      @db = options[:db] || options["DBName"]
+      @user = options[:user] || options["MasterUsername"]
+      @pwd = options[:pwd] || "****"
+      @size = options[:size] || options["AllocatedStorage"] || DEFAULT_SIZE
+      @instance_class = options[:instance_class] || options["DBInstanceClass"] || INSTANCE_CLASS
+      @zone = options[:zone] || options["AvailabilityZone"] || ZONE
+      @status = options["DBInstanceStatus"] || "pending"
+      @create_time = options["InstanceCreateTime"] || nil
       if options["Endpoint"] and options["Endpoint"]["Address"]
-        self.uri = options["Endpoint"]["Address"] || nil 
+        @uri = options["Endpoint"]["Address"] || nil 
       end
       
     end
@@ -81,85 +84,6 @@ module Hugo
       
     end
 
-    def uri=(uri)
-      @uri = uri
-    end
-    
-    def uri
-      @uri
-    end
-
-    def server=(server)
-      @server = server
-    end
-    
-    def server
-      @server
-    end
-
-    def db=(db)
-      @db = db
-    end
-    
-    def db
-      @db
-    end
-
-    def user=(user)
-      @user = user
-    end
-    
-    def user
-      @user
-    end
-  
-    def pwd=(pwd)
-      @pwd = pwd
-    end
-    
-    def pwd
-      @pwd
-    end
-
-    def instance_class=(instance_class)
-      @instance_class = instance_class
-    end
-    
-    def instance_class
-      @instance_class
-    end
-
-    def zone=(zone)
-      @zone = zone
-    end
-    
-    def zone
-      @zone
-    end
-
-    def size=(size)
-      @size = size
-    end
-    
-    def size
-      @size
-    end  
-
-    def status=(status)
-      @status = status
-    end
-    
-    def status
-      @status
-    end  
-
-    def create_time=(create_time)
-      @create_time = create_time
-    end
-    
-    def create_time
-      @create_time
-    end
   end
   
 end

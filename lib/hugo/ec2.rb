@@ -7,27 +7,28 @@ module Hugo
     AMI = ENV['EC2_AMI_ID'] || 'ami-1515f67c'
     ZONE = "us-east-1c"
     TYPE = "m1.small"
-    
+  
+    attr_accessor :name, :uri, :type, :zone, :image_id, :key_name, :create_time, :status
   
     def initialize(options = {})
-      self.name = options["instanceId"] 
+      @name = options["instanceId"] 
       
       if options["placement"] and options["placement"]["availabilityZone"]
-        self.zone = options["placement"]["availabilityZone"] 
+        @zone = options["placement"]["availabilityZone"] 
       else
-        self.zone = ZONE
+        @zone = ZONE
       end
       
-      self.uri = options["dnsName"] || ""
-      self.type = options["instanceType"] || TYPE
-      self.image_id = options["imageId"] || AMI
-      self.create_time = options["launchTime"] || nil
+      @uri = options["dnsName"] || ""
+      @type = options["instanceType"] || TYPE
+      @image_id = options["imageId"] || AMI
+      @create_time = options["launchTime"] || nil
       
-      self.key_name = options["key_name"] || options["keyName"] || KEY_NAME
+      @key_name = options["key_name"] || options["keyName"] || KEY_NAME
       if options["instanceState"] and options["instanceState"]["name"]
-        self.status = options["instanceState"]["name"]
+        @status = options["instanceState"]["name"]
       else
-        self.status = "unknown"
+        @status = "unknown"
       end
     end
     
@@ -68,70 +69,6 @@ module Hugo
       @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
       self.new(@ec2.describe_instances(:instance_id => instance).reservationSet.item[0].instancesSet.item[0])
     
-    end
-    
-    def name
-      @name
-    end
-    
-    def name=(name)
-      @name = name
-    end
-    
-    def uri
-      @uri
-    end
-    
-    def uri=(uri)
-      @uri = uri
-    end
-
-    def zone
-      @zone
-    end
-    
-    def zone=(zone)
-      @zone = zone
-    end
-
-    def type
-      @type
-    end
-    
-    def type=(type)
-      @type = type
-    end
-
-    def image_id
-      @image_id
-    end
-    
-    def image_id=(image_id)
-      @image_id = image_id
-    end
-
-    def key_name
-      @key_name
-    end
-    
-    def key_name=(key_name)
-      @key_name = key_name
-    end
-    
-    def create_time
-      @create_time
-    end
-    
-    def create_time=(create_time)
-      @create_time = create_time
-    end
-
-    def status
-      @status
-    end
-    
-    def status=(status)
-      @status = status
     end
     
   end
