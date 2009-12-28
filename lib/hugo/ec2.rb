@@ -1,6 +1,5 @@
 module Hugo
   class Ec2
-    include Hugo::Base
     
     ACCESS_KEY = ENV['AMAZON_ACCESS_KEY_ID'] 
     SECRET_KEY = ENV['AMAZON_SECRET_ACCESS_KEY']
@@ -39,6 +38,7 @@ module Hugo
       @ec2.run_instances(:image_id => self.image_id, :key_name => self.key_name, 
         :max_count => 1,
         :availability_zone => self.zone) unless self.create_time
+      self
     end
     
     def destroy
@@ -70,5 +70,14 @@ module Hugo
       @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
       self.new(@ec2.describe_instances(:instance_id => instance).reservationSet.item[0].instancesSet.item[0])
     end
+    
+    def self.find_or_create(options)
+      if options[:name]
+        self.find(options[:name]) 
+      else
+        self.new(options).create
+      end
+    end
+    
   end
 end

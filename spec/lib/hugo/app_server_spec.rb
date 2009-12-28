@@ -26,10 +26,9 @@ describe "Hugo App Server" do
   
   it "should find or create instance" do
     as = Hugo::AppServer.instance
-    as.name = "instance"
     as.deploy.should be_a_kind_of(Hugo::Ec2)
   end
-  
+
   before(:each) do
     @mock = mock('AWS::EC2::Base')
     instance = {"requestId"=>"e280b5aa-9b60-458f-b16f-96f97eb5e628", "reservationSet"=>
@@ -45,7 +44,5 @@ describe "Hugo App Server" do
     @mock.stub!(:terminate_instances).and_return(instance)
   
     AWS::EC2::Base.stub!(:new).and_return(@mock)
-  
   end
-  
 end

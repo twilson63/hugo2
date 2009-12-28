@@ -1,6 +1,5 @@
 module Hugo
   class Rds
-    include Hugo::Base
     
     ACCESS_KEY = ENV['AMAZON_ACCESS_KEY_ID'] 
     SECRET_KEY = ENV['AMAZON_SECRET_ACCESS_KEY'] 
@@ -49,15 +48,10 @@ module Hugo
       self.create 
     end
     
-    
     def destroy
       @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)      
-
       @rds.delete_db_instance(:db_instance_identifier => self.server, :skip_final_snapshot => true)
-      
     end
-    
-    
     
     def self.all
       @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
@@ -70,7 +64,6 @@ module Hugo
          #self.get_from_aws(instances)      
          [ self.new(instances) ]
       end
-      
     end
     
     def self.find(instance)
@@ -84,6 +77,9 @@ module Hugo
       # AWS Can't find db instance called ????
       nil
     end
-    
+
+    def self.find_or_create(options)
+      self.find(options[:name]) || self.new(options).create
+    end
   end
 end

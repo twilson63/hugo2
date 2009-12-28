@@ -16,7 +16,6 @@ describe Hugo::Ec2 do
     @mock.stub!(:terminate_instances).and_return(instance)
   
     AWS::EC2::Base.stub!(:new).and_return(@mock)
-  
   end
         
   it "should create a new instance" do  
@@ -40,6 +39,4 @@ describe Hugo::Ec2 do
   #   
   # end
   # 
-  
-  
 end

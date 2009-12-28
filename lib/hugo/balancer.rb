@@ -17,7 +17,6 @@ class Hugo::Balancer
     self.web = DEFAULT_WEB
     self.ssl_port = DEFAULT_SSL_PORT
     self.ssl_web = DEFAULT_SSL_WEB
-
     self.type = DEFAULT_TYPE
   end
   
@@ -27,6 +26,11 @@ class Hugo::Balancer
                             :listeners => [{"InstancePort"=> self.port, "Protocol"=>"HTTP", "LoadBalancerPort"=> self.web}, 
                               {"InstancePort"=> self.ssl_port, "Protocol"=>"TCP", "LoadBalancerPort"=> self.ssl_web}]
     )
+  end
+  
+  def attach(instance_id)
+    @elb = Hugo::Elb.find(self.name)
+    @elb.add(instance_id) unless @elb.instances.include?(instance_id)
   end
   
 end

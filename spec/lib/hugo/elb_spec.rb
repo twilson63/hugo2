@@ -25,6 +25,7 @@ describe Hugo::Elb do
 
     AWS::ELB::Base.stub!(:new).and_return(@mock)
 
+
   end
       
   it "should create a new instance" do    
