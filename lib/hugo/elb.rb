@@ -36,7 +36,7 @@ module Hugo
         :listeners => self.listeners,
         :availability_zones => self.zones
       ) unless self.create_time
-      true
+      self
     end
     
     def destroy
@@ -80,6 +80,9 @@ module Hugo
       self.new(results[0])
     end
     
+    def self.find_or_create(options)
+      self.find(options[:name]) || self.new(options).create
+    end
     
   end
 end
