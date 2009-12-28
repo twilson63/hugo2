@@ -28,7 +28,7 @@ describe Hugo::Rds do
   end
     
   it "should create a new instance" do    
-    @hugo_rds = Hugo::Rds.new(:server => "myserver", :db => "mydb", :user => "user", :pwd => "password").should be_true
+    @hugo_rds = Hugo::Rds.new(:name => "myserver", :db => "mydb", :user => "user", :password => "password").should be_true
     @hugo_rds.save.should be_true
   end
   

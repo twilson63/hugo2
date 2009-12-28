@@ -13,9 +13,9 @@ module Hugo
       # create instance
       
       @server = options[:server] || options["DBInstanceIdentifier"]
-      @db = options[:db] || options["DBName"]
+      @db = options[:name] || options["DBName"]
       @user = options[:user] || options["MasterUsername"]
-      @pwd = options[:pwd] || "****"
+      @pwd = options[:password] || "****"
       @size = options[:size] || options["AllocatedStorage"] || DEFAULT_SIZE
       @instance_class = options[:instance_class] || options["DBInstanceClass"] || INSTANCE_CLASS
       @zone = options[:zone] || options["AvailabilityZone"] || ZONE
@@ -40,7 +40,7 @@ module Hugo
         :db_name => self.db,
         :availability_zone => self.zone) unless self.create_time
       
-      true
+      self
     end
     
     def save
@@ -74,16 +74,17 @@ module Hugo
     def self.find(instance)
       # find instance
       @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
-      instance_desc = @rds.describe_db_instances(:db_instance_identifier => instance).DescribeDBInstancesResult.DBInstances.DBInstance
+      @rds_instance = @rds.describe_db_instances(:db_instance_identifier => instance)
+      instance_desc = @rds_instance.DescribeDBInstancesResult.DBInstances.DBInstance  
       # initialize Hugo::Rds Object with instance hash
       self.new(instance_desc)
+    rescue
+      # AWS Can't find db instance called ????
+      nil
     end
-        
     
-    def self.find_or_create(db)
-      
+    def self.find_or_create(options={})
+      self.find(options[:name]) || self.new(options).create
     end
-
   end
-  
 end

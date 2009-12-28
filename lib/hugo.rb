@@ -37,18 +37,21 @@ class Hugo::Cloud
     database = Hugo::Database.instance
     database.name = name
     database.instance_eval(&block)
+    database.deploy
   end
   
   def balancer(name=self.name, &block)
     balancer = Hugo::Balancer.instance
     balancer.name = name
     balancer.instance_eval(&block)
+    balancer.deploy
   end
   
   def app_server(name=self.name, &block)
     app_server = Hugo::AppServer.instance
     app_server.name = name
     app_server.instance_eval(&block)
+    app_server.deploy
   end
 end
 
