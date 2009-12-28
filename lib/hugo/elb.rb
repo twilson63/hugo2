@@ -1,5 +1,7 @@
 module Hugo
   class Elb
+    include Hugo::Base
+    
     ACCESS_KEY = ENV['AMAZON_ACCESS_KEY_ID'] 
     SECRET_KEY = ENV['AMAZON_SECRET_ACCESS_KEY'] 
     ZONES = ["us-east-1c"]
@@ -71,7 +73,6 @@ module Hugo
       @elb = AWS::ELB::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
       instances = @elb.describe_load_balancers().DescribeLoadBalancersResult.LoadBalancerDescriptions.member      
       instances.map { |i| self.new(i) }
-    
     end
     
     def self.find(balancer)
@@ -79,10 +80,5 @@ module Hugo
       results = @elb.describe_load_balancers(:load_balancer_names => balancer).DescribeLoadBalancersResult.LoadBalancerDescriptions.member
       self.new(results[0])
     end
-    
-    def self.find_or_create(options)
-      self.find(options[:name]) || self.new(options).create
-    end
-    
   end
 end

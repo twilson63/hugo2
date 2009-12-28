@@ -17,7 +17,6 @@ describe Hugo::Elb do
               "Instances"=>{"member"=>[{"InstanceId"=>"i-XX14642f"}, {"InstanceId"=>"i-YY5b2923"}]}}]}}, 
               "ResponseMetadata"=>{"RequestId"=>"0ada795e-e1df-11de-950d-c1b3b9142192"}, "xmlns"=>"http://elasticloadbalancing.amazonaws.com/doc/2009-05-15/"}
     
-    
     @mock.stub!(:create_load_balancer).and_return(instance)
     @mock.stub!(:describe_load_balancers).and_return(instance)
     @mock.stub!(:delete_load_balancer).and_return(instance)
@@ -52,13 +51,11 @@ describe Hugo::Elb do
   it "should remove ec2 instance" do
     Hugo::Elb.find('test').remove('i-12345678').instances.length.should == 2
   end
-  # 
-  # 
+
   # it "should provide uri" do
   #   Hugo::Elb.find('test').uri.should_not be_nil
   # end
   
   # it "should provide Created Date"
   # it "should find or create rds instance"
-  
 end

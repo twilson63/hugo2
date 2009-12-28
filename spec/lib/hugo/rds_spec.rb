@@ -24,7 +24,6 @@ describe Hugo::Rds do
     @mock.stub!(:delete_db_instance).and_return(instance)
 
     AWS::RDS::Base.stub!(:new).and_return(@mock)
-
   end
     
   it "should create a new instance" do    
@@ -43,7 +42,6 @@ describe Hugo::Rds do
   it "should delete rds instance" do    
     Hugo::Rds.find('test').destroy
   end
-  
   
   it "should provide uri" do
     Hugo::Rds.find('test').uri.should_not be_nil

@@ -7,6 +7,7 @@ Bundler.require_env
 require 'AWS'
 require 'net/ssh'
 require 'singleton'
+require 'hugo/base'
 require 'hugo/app_server'
 require 'hugo/balancer'
 require 'hugo/database'

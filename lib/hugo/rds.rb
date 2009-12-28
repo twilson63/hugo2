@@ -1,5 +1,7 @@
 module Hugo
   class Rds
+    include Hugo::Base
+    
     ACCESS_KEY = ENV['AMAZON_ACCESS_KEY_ID'] 
     SECRET_KEY = ENV['AMAZON_SECRET_ACCESS_KEY'] 
     DEFAULT_SIZE = 5
@@ -83,8 +85,5 @@ module Hugo
       nil
     end
     
-    def self.find_or_create(options={})
-      self.find(options[:name]) || self.new(options).create
-    end
   end
 end

@@ -1,5 +1,7 @@
 module Hugo
   class Ec2
+    include Hugo::Base
+    
     ACCESS_KEY = ENV['AMAZON_ACCESS_KEY_ID'] 
     SECRET_KEY = ENV['AMAZON_SECRET_ACCESS_KEY']
     KEY_NAME = ENV['KEY_NAME']
@@ -9,7 +11,7 @@ module Hugo
     TYPE = "m1.small"
   
     attr_accessor :name, :uri, :type, :zone, :image_id, :key_name, :create_time, :status
-  
+
     def initialize(options = {})
       @name = options["instanceId"] 
       
@@ -62,15 +64,11 @@ module Hugo
     def self.all
       @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
       @ec2.describe_instances().reservationSet.item[0].instancesSet.item.map { |i| self.new(i) }
-      
     end
     
     def self.find(instance)
       @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
       self.new(@ec2.describe_instances(:instance_id => instance).reservationSet.item[0].instancesSet.item[0])
-    
     end
-    
   end
-  
 end

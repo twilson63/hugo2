@@ -6,4 +6,9 @@ class Hugo::AppServer
 
   def initialize
   end
+  
+  def deploy
+    Hugo::Ec2.find_or_create()
+  end
+  
 end
