@@ -9,7 +9,7 @@ class Hugo::AppServer
   attr_accessor :name, :uri, :type, :zone, :image_id, 
                 :key_name, :db, :lb, :instances,
                 :port, :ssl, :application, :cloud
-
+                  
   def database(name, &block)
     database = Hugo::Database.instance
     database.instance_eval(&block)
@@ -33,6 +33,8 @@ class Hugo::AppServer
     self.zone = DEFAULT_ZONE
     self.image_id = DEFAULT_IMAGE_ID
     self.key_name = DEFAULT_KEY_NAME
+    self.instances = 1
+    
   end
     
   

@@ -21,18 +21,19 @@ describe "Hugo DSL" do
   
   it "should deploy infrastructure" do
     block = lambda do
-      cloud "mycloud" do |c| 
-        c.application = "blank"        
-        c.instances = 1
+      cloud "mycloud" do 
+        @application =  "blank"
+        @instances   =  2
+                
+        balancer      do end
         
-        c.balancer do end
         
-        
-        c.database "tomtest" do |db|
-          db.server = "jackdev"
-          db.user = "admin"
-          db.password = "mypassword"  
-        end                  
+        database "tomtest" do 
+          @server     =  "jackdev"
+          @user       =  "admin"
+          @password   =  "mypassword"  
+        end
+                          
       end
     end
     

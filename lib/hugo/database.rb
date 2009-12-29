@@ -13,6 +13,13 @@ class Hugo::Database
     self.zone = DEFAULT_ZONE
     self.server = DEFAULT_SERVER
   end
+  
+  def settings(parameters)
+    parameters.each_key do |k|
+      self[k] = parameters[k]
+    end
+  end
+  
 
   def deploy
     Hugo::Rds.find_or_create( :name => self.name,
