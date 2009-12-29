@@ -11,13 +11,13 @@ describe "Hugo Database" do
   it "should be valid" do
     
     block = lambda do
-      cloud "my_cloud" do |c|
-        c.instances = 1
-        c.balancer do end
-        c.database "testapp" do |db|
-          db.server = "serverx"
-          db.user = "test_user"
-          db.password = "test_password"
+      cloud "my_cloud" do 
+        @instances = 1
+        balancer do end
+        database "testapp" do 
+          @server = "serverx"
+          @user = "test_user"
+          @password = "test_password"
         end
       end
     end

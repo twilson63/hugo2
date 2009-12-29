@@ -19,6 +19,8 @@ describe "Hugo DSL" do
     end.should be_true
   end
   
+  
+  
   it "should deploy infrastructure" do
     block = lambda do
       cloud "mycloud" do 

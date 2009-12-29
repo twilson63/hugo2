@@ -7,7 +7,7 @@ module Hugo
     INSTANCE_CLASS = "db.m1.small"
     ZONE = "us-east-1c"
     
-    attr_accessor :db, :uri, :server, :user, :pwd, :instance_class, 
+    attr_accessor :db, :uri, :server, :user, :password, :instance_class, 
                   :zone, :size, :status, :create_time
     
     def initialize(options={})
@@ -16,7 +16,7 @@ module Hugo
       @server = options[:server] || options["DBInstanceIdentifier"]
       @db = options[:name] || options["DBName"]
       @user = options[:user] || options["MasterUsername"]
-      @pwd = options[:password] || "****"
+      @password = options[:password] || "****"
       @size = options[:size] || options["AllocatedStorage"] || DEFAULT_SIZE
       @instance_class = options[:instance_class] || options["DBInstanceClass"] || INSTANCE_CLASS
       @zone = options[:zone] || options["AvailabilityZone"] || ZONE
@@ -38,7 +38,7 @@ module Hugo
         :db_instance_class => self.instance_class,
         :engine => "MySQL5.1",
         :master_username => self.user,
-        :master_user_password => self.pwd,
+        :master_user_password => self.password,
         :db_name => self.db,
         :availability_zone => self.zone) unless self.create_time
       
