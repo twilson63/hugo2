@@ -1,6 +1,6 @@
-require File.dirname(__FILE__) + '/../../spec_helper'
+require File.dirname(__FILE__) + '/../../../spec_helper'
 
-describe Hugo::Ec2 do
+describe Hugo::Aws::Ec2 do
   before(:each) do
     @mock = mock('AWS::EC2::Base')
     instance = {"requestId"=>"e280b5aa-9b60-458f-b16f-96f97eb5e628", "reservationSet"=>
@@ -24,29 +24,29 @@ describe Hugo::Ec2 do
   end
         
   it "should create a new instance" do  
-    @ec2 = Hugo::Ec2.new()
+    @ec2 = Hugo::Aws::Ec2.new()
     @ec2.save.should be_true  
   end
 
   it "should terminate instance" do
-    Hugo::Ec2.find('i-12345678').destroy.should be_true
+    Hugo::Aws::Ec2.find('i-12345678').destroy.should be_true
   end
 
   it "should find instance" do
-    Hugo::Ec2.find('i-12345678').should_not be_nil
+    Hugo::Aws::Ec2.find('i-12345678').should_not be_nil
   end
 
   it "should return all instances" do
-    Hugo::Ec2.all.length.should == 1
+    Hugo::Aws::Ec2.all.length.should == 1
   end
   
   it "should find or create security group" do
-    @ec2 = Hugo::Ec2.find('i-12345678')
+    @ec2 = Hugo::Aws::Ec2.find('i-12345678')
     @ec2.find_or_create_security_group('test', 'test description').should_not be_empty
   end
   
   it "should destroy a security group" do
-    Hugo::Ec2.find('i-12345678').destroy_security_group('test').should be_true
+    Hugo::Aws::Ec2.find('i-12345678').destroy_security_group('test').should be_true
   end
   #
   # it "should deploy app" do

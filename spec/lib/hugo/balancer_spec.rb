@@ -9,7 +9,7 @@ describe "Hugo Balancer" do
     block = lambda do
       cloud "my_cloud" do 
         @instances = 1
-        balancer do end
+        balancer
         database "testapp" do 
           @server = "serverx"
           @user = "test_user"
@@ -36,9 +36,8 @@ describe "Hugo Balancer" do
   it "should find or create balancer" do
     lb = Hugo::Balancer.instance
     lb.name = "myserver"
-    lb.deploy.should be_a_kind_of(Hugo::Elb)
+    lb.deploy.should be_a_kind_of(Hugo::Aws::Elb)
     
   end
-
 
 end

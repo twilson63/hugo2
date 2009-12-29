@@ -33,7 +33,6 @@ def mock_ec2
 
   AWS::EC2::Base.stub!(:new).and_return(@mock_ec2)
   
-
 end
 
 def mock_elb
@@ -59,6 +58,7 @@ def mock_elb
   @mock_elb.stub!(:deregister_instances_from_load_balancer).and_return(instance)
 
   AWS::ELB::Base.stub!(:new).and_return(@mock_elb)
+  
   
 end
 

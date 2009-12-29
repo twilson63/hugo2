@@ -22,7 +22,7 @@ class Hugo::Database
   
 
   def deploy
-    Hugo::Rds.find_or_create( :name => self.name,
+    Hugo::Aws::Rds.find_or_create( :name => self.name,
                               :server => self.server,
                               :user => self.user,
                               :password => self.password,

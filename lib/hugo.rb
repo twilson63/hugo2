@@ -10,9 +10,9 @@ require 'singleton'
 require 'hugo/cloud'
 require 'hugo/balancer'
 require 'hugo/database'
-require 'hugo/rds'
-require 'hugo/elb'
-require 'hugo/ec2'
+require 'hugo/aws/rds'
+require 'hugo/aws/elb'
+require 'hugo/aws/ec2'
 
 module Hugo; end
 

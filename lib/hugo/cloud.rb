@@ -62,13 +62,13 @@ private
   end
   
   def create_ec2
-    ec2 = Hugo::Ec2.new(:type => self.type, 
+    ec2 = Hugo::Aws::Ec2.new(:type => self.type, 
                     :zone => self.zone, 
                     :image_id => self.image_id,
                     :key_name => self.key_name).create
     new_ec2 = nil
     loop do
-      new_ec2 = Hugo::Ec2.find(ec2.name)
+      new_ec2 = Hugo::Aws::Ec2.find(ec2.name)
       if new_ec2.status == "running"
         break
       end
@@ -102,14 +102,14 @@ private
       :github => {  :url => self.github_url, 
                     :publickey => self.publickey, 
                     :privatekey => self.privatekey},
-      :access_key => Hugo::Ec2::ACCESS_KEY,
-      :secret_key => Hugo::Ec2::SECRET_KEY,
+      :access_key => Hugo::Aws::Ec2::ACCESS_KEY,
+      :secret_key => Hugo::Aws::Ec2::SECRET_KEY,
       :apache => { :listen_ports => [self.port, self.ssl] }
 
     }
 
     commands << 'sudo chef-solo -c /home/ubuntu/hugo-repos/config/solo.rb -j /home/ubuntu/dna.json'
-    Hugo::Ec2.find(instance_id).ssh(commands, dna)
+    Hugo::Aws::Ec2.find(instance_id).ssh(commands, dna)
   end
 
   def deploy_ec2
@@ -133,13 +133,13 @@ private
       :github => {  :url => self.github_url, 
                     :publickey => self.publickey, 
                     :privatekey => self.privatekey},
-      :access_key => Hugo::Ec2::ACCESS_KEY,
-      :secret_key => Hugo::Ec2::SECRET_KEY,
+      :access_key => Hugo::Aws::Ec2::ACCESS_KEY,
+      :secret_key => Hugo::Aws::Ec2::SECRET_KEY,
       :app => self.app_info
     }
     
     lb.instances.each do |i|
-      Hugo::Ec2.find(i).ssh(commands, dna)
+      Hugo::Aws::Ec2.find(i).ssh(commands, dna)
     end
   end
   
@@ -147,7 +147,7 @@ private
     i.times do 
       instance_id = lb.instances[0]
       lb.remove(instance_id)
-      Hugo::Ec2.find(instance_id).destroy
+      Hugo::Aws::Ec2.find(instance_id).destroy
     end  
   end
   

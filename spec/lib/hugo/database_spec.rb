@@ -74,7 +74,6 @@ describe Hugo::Database do
   
   end
   
-  
 
   it "should create a new rds instance" do
     
@@ -83,7 +82,7 @@ describe Hugo::Database do
     db.name = "mydb"
     db.user = "admin"
     db.password = "test"
-    db.deploy.should be_a_kind_of(Hugo::Rds)
+    db.deploy.should be_a_kind_of(Hugo::Aws::Rds)
   end
   
   
