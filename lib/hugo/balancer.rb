@@ -23,14 +23,9 @@ class Hugo::Balancer
   def deploy
     Hugo::Aws::Elb.find_or_create(:name => self.name,
                             :zones => self.zone,
-                            :listeners => [{"InstancePort"=> self.port, "Protocol"=>"HTTP", "LoadBalancerPort"=> self.web}, 
-                              {"InstancePort"=> self.ssl_port, "Protocol"=>"TCP", "LoadBalancerPort"=> self.ssl_web}]
+                            :listeners => [{ :instance_port => self.port, :protocol =>"HTTP", :load_balancer_port => self.web}, 
+                              { :instance_port => self.ssl_port, :protocol =>"TCP", :load_balancer_port => self.ssl_web}]
     )
   end
-  
-  def attach(instance_id)
-    @elb = Hugo::Aws::Elb.find(self.name)
-    @elb.add(instance_id) unless @elb.instances.include?(instance_id)
-  end
-  
+    
 end

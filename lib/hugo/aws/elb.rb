@@ -12,19 +12,23 @@ module Hugo
     
       def initialize(options = {} )
         @name = options[:name] || options["LoadBalancerName"]
-        @uri = options["DNSName"] || nil
+    
+        @uri = options["DNSName"] if options["DNSName"]
+            
         if options["Instances"] and options["Instances"]["member"]
           @instances = options["Instances"]["member"].map { |i| i.InstanceId }
+        else
+          @instances = []
         end
         if options["AvailabilityZones"] and options["AvailabilityZones"]["member"]
           @zones = options["AvailabilityZones"]["member"]
         else
-          @zones = options["zones"] || ZONES
+          @zones = options[:zones] || ZONES
         end
         if options["Listeners"] and options["Listeners"]["member"]
           @listeners = options["Listeners"]["member"]
         else
-          @listeners = options["listeners"] || LISTENERS
+          @listeners = options[:listeners] || LISTENERS
         end
         if options["CreatedTime"]
           @create_time = options["CreatedTime"]
@@ -76,8 +80,14 @@ module Hugo
     
       def self.find(balancer)
         @elb = AWS::ELB::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
-        results = @elb.describe_load_balancers(:load_balancer_names => balancer).DescribeLoadBalancersResult.LoadBalancerDescriptions.member
-        self.new(results[0])
+        
+        result = nil
+        
+        @elb.describe_load_balancers().DescribeLoadBalancersResult.LoadBalancerDescriptions.member.each do |m|
+          result = self.new(m) if m.LoadBalancerName == balancer
+        end
+        
+        result
       end
     
       def self.find_or_create(options)

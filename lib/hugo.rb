@@ -7,12 +7,12 @@ Bundler.require_env
 require 'AWS'
 require 'net/ssh'
 require 'singleton'
-require 'hugo/cloud'
-require 'hugo/balancer'
-require 'hugo/database'
-require 'hugo/aws/rds'
-require 'hugo/aws/elb'
-require 'hugo/aws/ec2'
+require File.dirname(__FILE__) + '/hugo/cloud'
+require File.dirname(__FILE__) + '/hugo/balancer'
+require File.dirname(__FILE__) + '/hugo/database'
+require File.dirname(__FILE__) + '/hugo/aws/rds'
+require File.dirname(__FILE__) + '/hugo/aws/elb'
+require File.dirname(__FILE__) + '/hugo/aws/ec2'
 
 module Hugo; end
 
@@ -25,8 +25,8 @@ class Hugo::Suite
   def cloud(name="DEFAULT", &block)
     cloud = Hugo::Cloud.instance
     cloud.security_group = name
-    cloud.instance_eval(&block) if block_given?   
     cloud.name = name
+    cloud.instance_eval(&block) if block_given?   
     cloud.deploy
   end
 end

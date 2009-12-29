@@ -13,7 +13,7 @@ module Hugo
     
       def initialize(options={})
         # create instance
-      
+        
         @server = options[:server] || options["DBInstanceIdentifier"]
         @db = options[:name] || options["DBName"]
         @user = options[:user] || options["MasterUsername"]
@@ -26,19 +26,20 @@ module Hugo
         if options["Endpoint"] and options["Endpoint"]["Address"]
           @uri = options["Endpoint"]["Address"] || nil 
         end
-        @db_security_group = options[:db_security_group] || nil
+        @db_security_group = options[:db_security_group] || "default"
         if options["DBSecurityGroups"] and options["DBSecurityGroups"]["DBSecurityGroup"]
           @db_security_group = options["DBSecurityGroups"]["DBSecurityGroup"]["DBSecurityGroupName"] 
         end
+        
       end
     
       def create
-      
         @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)      
         
-        if @db_security_group
-          self.find_or_create_db_security_group(@db_security_group)
-        end
+        # TODO Create DB Security Group wheh Amazon Bug Fixed! -tnw
+        # if @db_security_group
+        #   find_or_create_db_security_group(@db_security_group, @db_security_group)
+        # end
         
         @rds.create_db_instance(
           :db_instance_identifier => self.server,
@@ -48,14 +49,14 @@ module Hugo
           :master_username => self.user,
           :master_user_password => self.password,
           :db_name => self.db,
-          :availability_zone => self.zone,
-          :db_security_groups => @db_security_group || "default"
+          :availability_zone => self.zone
+          #, :db_security_groups => @db_security_group
           ) unless self.create_time
         self
       end
     
       def save
-        self.create 
+        create 
       end
     
       def destroy
@@ -89,7 +90,8 @@ module Hugo
       end
 
       def self.find_or_create(options)
-        self.find(options[:name]) || self.new(options).create
+        self.find(options[:server]) || self.new(options).create
+         
       end
 
       def authorize_security_group(db_sec, ec2_sec, owner_id)
@@ -102,8 +104,9 @@ module Hugo
         begin
           @security_groups = @rds.describe_db_security_groups(:db_security_group_name => name)
         rescue
-          @security_groups = @rds.create_db_security_groups(:db_security_group_name => name, :db_security_group_description => description)
+          @security_groups = @rds.create_db_security_group(:db_security_group_name => name, :db_security_group_description => description)
         end
+        puts @security_groups
         @security_groups
       end
 

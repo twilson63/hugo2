@@ -15,13 +15,6 @@ class Hugo::Database
     self.db_security_group = "default"
   end
   
-  def settings(parameters)
-    parameters.each_key do |k|
-      self[k] = parameters[k]
-    end
-  end
-  
-
   def deploy
     Hugo::Aws::Rds.find_or_create( :name => self.name,
                               :server => self.server,
@@ -31,6 +24,5 @@ class Hugo::Database
                               :zone => self.zone,
                               :db_security_group => self.db_security_group
                                )
-    
   end
 end

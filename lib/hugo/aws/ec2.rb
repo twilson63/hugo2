@@ -13,6 +13,10 @@ module Hugo
       attr_accessor :name, :uri, :type, :zone, :image_id, :key_name, :create_time, :status, :security_group
 
       def initialize(options = {})
+        set_attributes(options)
+      end
+      
+      def set_attributes(options = {})
         @name = options["instanceId"] 
       
         if options["placement"] and options["placement"]["availabilityZone"]
@@ -32,18 +36,22 @@ module Hugo
         else
           @status = "unknown"
         end
-        @security_group = options[:security_group] || nil
-        if options["groupSet"] and options["groupSet"]["item"] and options["groupSet"]["item"][0]
-          @security_group = options["groupSet"]["item"][0]["groupId"]
-        end
+
+        # @security_group = options[:security_group] || nil
+        # if options["groupSet"] and options["groupSet"]["item"] and options["groupSet"]["item"][0]
+        #   @security_group = options["groupSet"]["item"][0]["groupId"]
+        # end
         
       end
+      
     
       def create
         @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
-        @ec2.run_instances(:image_id => self.image_id, :key_name => self.key_name, 
+        result = @ec2.run_instances(:image_id => self.image_id, :key_name => self.key_name, 
           :max_count => 1,
           :availability_zone => self.zone) unless self.create_time
+        puts result.inspect
+        set_attributes(result.instancesSet.item[0])
         self
       end
     
@@ -72,7 +80,7 @@ module Hugo
         begin
           @security_groups = @ec2.describe_security_groups(:group_name => name)
         rescue
-          @security_groups = @ec2.create_security_groups(:group_name => name, :group_description => description)
+          @security_groups = @ec2.create_security_group(:group_name => name, :group_description => description)
         end
         @security_groups
       end

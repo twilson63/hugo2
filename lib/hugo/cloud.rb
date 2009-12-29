@@ -24,12 +24,15 @@ class Hugo::Cloud
 
   def database(name, &block)
     database = Hugo::Database.instance
+    
     database.db_security_group = self.name
+    database.server = self.name
+    database.name = name
     
     database.instance_eval(&block) if block_given? 
-    database.name = name
-
+    
     self.db = database.deploy
+    puts "Database Deployed!"
     self.db
   end
   
@@ -40,20 +43,21 @@ class Hugo::Cloud
     self.port = balancer.port
     self.ssl = balancer.ssl_port
     self.lb = balancer.deploy
+    puts "Balancer Deployed!"
     self.lb
   end
     
   
   def deploy
     # Find or Create Security Group
-    Hugo::Aws::Ec2.find_or_create_security_group(self.security_group, self.security_group)
-    
+    # Hugo::Aws::Ec2.find_or_create_security_group(self.security_group, self.security_group)
     # Need to compare balancer instances to instances
     if self.instances > lb.instances.length
       build_ec2(self.instances - lb.instances.length)
     elsif self.instances < lb.instances.length
       delete_ec2(lb.instances.length - self.instances)
     end
+    puts "EC2 Created"
     deploy_ec2      
   end
   
@@ -72,10 +76,12 @@ private
                     :zone => self.zone, 
                     :image_id => self.image_id,
                     :key_name => self.key_name,
-                    :security_group => self.security_group).create
+                    :security_group => "default").create
+    
     new_ec2 = nil
     loop do
       new_ec2 = Hugo::Aws::Ec2.find(ec2.name)
+      puts new_ec2.status
       if new_ec2.status == "running"
         break
       end
