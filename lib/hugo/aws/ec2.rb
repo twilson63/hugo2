@@ -10,7 +10,7 @@ module Hugo
       ZONE = "us-east-1c"
       TYPE = "m1.small"
   
-      attr_accessor :name, :uri, :type, :zone, :image_id, :key_name, :create_time, :status
+      attr_accessor :name, :uri, :type, :zone, :image_id, :key_name, :create_time, :status, :security_group
 
       def initialize(options = {})
         @name = options["instanceId"] 
@@ -32,6 +32,11 @@ module Hugo
         else
           @status = "unknown"
         end
+        @security_group = options[:security_group] || nil
+        if options["groupSet"] and options["groupSet"]["item"] and options["groupSet"]["item"][0]
+          @security_group = options["groupSet"]["item"][0]["groupId"]
+        end
+        
       end
     
       def create
@@ -62,7 +67,7 @@ module Hugo
         end
       end
     
-      def find_or_create_security_group(name, description)
+      def self.find_or_create_security_group(name, description)
         @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
         begin
           @security_groups = @ec2.describe_security_groups(:group_name => name)
@@ -72,7 +77,7 @@ module Hugo
         @security_groups
       end
 
-      def destroy_security_group(name)
+      def self.destroy_security_group(name)
         @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
         @ec2.delete_security_group(:group_name => name)
       end

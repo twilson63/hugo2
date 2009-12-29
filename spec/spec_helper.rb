@@ -31,7 +31,13 @@ def mock_ec2
   @mock_ec2.stub!(:describe_instances).and_return(instance)
   @mock_ec2.stub!(:terminate_instances).and_return(instance)
 
+  security_group = {"group_name"=>"test", "group_description"=>"test description"}
+  @mock_ec2.stub!(:create_security_groups).and_return(security_group)
+  @mock_ec2.stub!(:describe_security_groups).and_return(security_group)
+  @mock_ec2.stub!(:delete_security_group).and_return(security_group)
+
   AWS::EC2::Base.stub!(:new).and_return(@mock_ec2)
+  
   
 end
 

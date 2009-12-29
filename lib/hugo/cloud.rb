@@ -11,7 +11,8 @@ class Hugo::Cloud
                 :key_name, :db, :lb, :instances,
                 :port, :ssl, :application, :cookbook,
                 :github_url, :publickey, :privatekey,
-                :gem_list, :package_list, :run_list, :app_info
+                :gem_list, :package_list, :run_list, :app_info,
+                :security_group
                   
   def initialize
     self.zone = DEFAULT_ZONE
@@ -44,6 +45,9 @@ class Hugo::Cloud
     
   
   def deploy
+    # Find or Create Security Group
+    Hugo::Aws::Ec2.find_or_create_security_group(self.security_group, self.security_group)
+    
     # Need to compare balancer instances to instances
     if self.instances > lb.instances.length
       build_ec2(self.instances - lb.instances.length)
@@ -67,7 +71,8 @@ private
     ec2 = Hugo::Aws::Ec2.new(:type => self.type, 
                     :zone => self.zone, 
                     :image_id => self.image_id,
-                    :key_name => self.key_name).create
+                    :key_name => self.key_name,
+                    :security_group => self.security_group).create
     new_ec2 = nil
     loop do
       new_ec2 = Hugo::Aws::Ec2.find(ec2.name)

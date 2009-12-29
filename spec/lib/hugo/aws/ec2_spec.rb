@@ -41,12 +41,11 @@ describe Hugo::Aws::Ec2 do
   end
   
   it "should find or create security group" do
-    @ec2 = Hugo::Aws::Ec2.find('i-12345678')
-    @ec2.find_or_create_security_group('test', 'test description').should_not be_empty
+    Hugo::Aws::Ec2.find_or_create_security_group('test', 'test description').should_not be_empty
   end
   
   it "should destroy a security group" do
-    Hugo::Aws::Ec2.find('i-12345678').destroy_security_group('test').should be_true
+    Hugo::Aws::Ec2.destroy_security_group('test').should be_true
   end
   #
   # it "should deploy app" do
