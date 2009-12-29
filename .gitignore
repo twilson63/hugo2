@@ -1,3 +1,5 @@
 bin/*
 vendor/gems/*
 !vendor/gems/cache/
+!example/myhugo.rb
+example/gmms.rb
