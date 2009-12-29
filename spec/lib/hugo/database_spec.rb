@@ -2,10 +2,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "Hugo Database" do
   before(:each) do
-    mock_ec2
-    mock_elb
-    mock_rds
-
+    mocks
   end
 
   it "should be valid" do

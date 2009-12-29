@@ -1,6 +1,6 @@
 module Hugo; end
   
-class Hugo::AppServer
+class Hugo::Cloud
   include Singleton
   DEFAULT_ZONE = 'us-east-1c'
   DEFAULT_IMAGE_ID = 'ami-1515f67c'
@@ -62,22 +62,25 @@ private
   end
   
   def create_ec2
-    ec2 = Hugo::Ec2.create(:type => self.type, 
+    ec2 = Hugo::Ec2.new(:type => self.type, 
                     :zone => self.zone, 
                     :image_id => self.image_id,
-                    :key_name => self.key_name)
+                    :key_name => self.key_name).create
     new_ec2 = nil
     loop do
       new_ec2 = Hugo::Ec2.find(ec2.name)
       if new_ec2.status == "running"
         break
       end
+      sleep 5
     end
     
+    sleep 10
     new_ec2.name
   end
 
-  def setup_ec2
+  def setup_ec2(instance_id)
+    
     commands = []
     commands << 'sudo apt-get update -y'
     commands << 'sudo apt-get install ruby ruby1.8-dev libopenssl-ruby1.8 rdoc ri irb build-essential git-core xfsprogs -y'
@@ -106,7 +109,6 @@ private
     }
 
     commands << 'sudo chef-solo -c /home/ubuntu/hugo-repos/config/solo.rb -j /home/ubuntu/dna.json'
-
     Hugo::Ec2.find(instance_id).ssh(commands, dna)
   end
 
@@ -118,8 +120,8 @@ private
     commands << 'sudo chef-solo -c /home/ubuntu/hugo-repos/config/solo.rb -j /home/ubuntu/dna.json'
 
     dna = { :run_list => self.run_list,
-      :package_list => self.package_list || {},
-      :gem_list => self.gem_list || {},
+      :package_list => self.package_list,
+      :gem_list => self.gem_list,
       :application => self.application, 
       :customer => self.name,
       :database => { 

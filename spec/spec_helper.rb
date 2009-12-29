@@ -10,6 +10,13 @@ require 'spec'
 require 'spec/autorun'
 require 'spec/interop/test'
 
+def mock_ssh
+  @mock_ssh = mock('Net::SSH')
+  Net::SSH.stub!(:start).and_return(@mock_ssh)
+  @mock_ssh.stub!(:exec).and_return("Works!")  
+end
+
+
 def mock_ec2
   @mock_ec2 = mock('AWS::EC2::Base')
   instance = {"requestId"=>"e280b5aa-9b60-458f-b16f-96f97eb5e628", "reservationSet"=>
@@ -25,6 +32,8 @@ def mock_ec2
   @mock_ec2.stub!(:terminate_instances).and_return(instance)
 
   AWS::EC2::Base.stub!(:new).and_return(@mock_ec2)
+  
+
 end
 
 def mock_elb
@@ -40,7 +49,7 @@ def mock_elb
             "AvailabilityZones"=>{"member"=>["us-east-1c"]}, 
             "DNSName"=>"test-611935247.us-east-1.elb.amazonaws.com", 
             "LoadBalancerName"=>"test", 
-            "Instances"=>{"member"=>[{"InstanceId"=>"i-XX14642f"}, {"InstanceId"=>"i-YY5b2923"}]}}]}}, 
+            "Instances"=>{"member"=>[]}}]}}, 
             "ResponseMetadata"=>{"RequestId"=>"0ada795e-e1df-11de-950d-c1b3b9142192"}, "xmlns"=>"http://elasticloadbalancing.amazonaws.com/doc/2009-05-15/"}
   
   @mock_elb.stub!(:create_load_balancer).and_return(instance)
@@ -78,5 +87,14 @@ def mock_rds
   AWS::RDS::Base.stub!(:new).and_return(@mock_rds)
   
 end
+
+def mocks
+  mock_ssh
+  mock_ec2
+  mock_rds
+  mock_elb
+end
+
+
 
 

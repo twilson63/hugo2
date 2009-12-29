@@ -27,17 +27,11 @@ describe Hugo::Elb do
   end
   
   it "should add ec2 intance" do
-    Hugo::Elb.find('test').add('i-12345678').instances.length.should == 3
+    Hugo::Elb.find('test').add('i-12345678').instances.length.should == 1
   end
   
   it "should remove ec2 instance" do
-    Hugo::Elb.find('test').remove('i-12345678').instances.length.should == 2
+    Hugo::Elb.find('test').remove('i-12345678').instances.length.should == 0
   end
 
-  # it "should provide uri" do
-  #   Hugo::Elb.find('test').uri.should_not be_nil
-  # end
-  
-  # it "should provide Created Date"
-  # it "should find or create rds instance"
 end

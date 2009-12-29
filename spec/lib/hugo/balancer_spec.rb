@@ -1,6 +1,9 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "Hugo Balancer" do
+  before(:each) do
+    mocks
+  end
 
   it "should be valid" do
     block = lambda do
@@ -37,10 +40,5 @@ describe "Hugo Balancer" do
     
   end
 
-  before(:each) do
-    mock_ec2
-    mock_elb
-    mock_rds
-  end
 
 end

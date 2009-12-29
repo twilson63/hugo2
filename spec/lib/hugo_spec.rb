@@ -1,6 +1,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Hugo DSL" do
+  before(:each) do
+    mocks        
+  end
+  
   it "should be valid" do
     block = lambda {|a,b|}
     lambda do
@@ -23,19 +27,22 @@ describe "Hugo DSL" do
   
   it "should deploy infrastructure" do
     block = lambda do
-      cloud "mycloud" do 
-        @application =  "blank"
+      
+      cloud "gmms" do 
+        @application = "sentinel"
         @instances   =  2
                 
-        balancer      do end
+        balancer do 
+          
+        end
         
-        
-        database "tomtest" do 
-          @server     =  "jackdev"
+        database "sentinel" do 
           @user       =  "admin"
           @password   =  "mypassword"  
         end
-                          
+        
+        
+        @gem_list = [{:name => "rack"}]                  
       end
     end
     
@@ -46,11 +53,5 @@ describe "Hugo DSL" do
     
   end
 
-  before(:each) do
-    mock_ec2
-    mock_elb
-    mock_rds
-        
-  end
   
 end
