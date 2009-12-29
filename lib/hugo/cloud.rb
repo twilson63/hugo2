@@ -11,7 +11,7 @@ class Hugo::Cloud
                 :key_name, :db, :lb, :instances,
                 :port, :ssl, :application, :cookbook,
                 :github_url, :publickey, :privatekey,
-                :gem_list, :package_list, :run_list
+                :gem_list, :package_list, :run_list, :app_info
                   
   def initialize
     self.zone = DEFAULT_ZONE
@@ -23,7 +23,7 @@ class Hugo::Cloud
 
   def database(name, &block)
     database = Hugo::Database.instance
-    database.instance_eval(&block)
+    database.instance_eval(&block) if block_given? 
     database.name = name
 
     self.db = database.deploy
@@ -33,7 +33,7 @@ class Hugo::Cloud
   def balancer(&block)
     balancer = Hugo::Balancer.instance
     balancer.name = self.name
-    balancer.instance_eval(&block)
+    balancer.instance_eval(&block) if block_given? 
     self.port = balancer.port
     self.ssl = balancer.ssl_port
     self.lb = balancer.deploy
@@ -135,7 +135,7 @@ private
                     :privatekey => self.privatekey},
       :access_key => Hugo::Ec2::ACCESS_KEY,
       :secret_key => Hugo::Ec2::SECRET_KEY,
-      :app => self.application || nil
+      :app => self.app_info
     }
     
     lb.instances.each do |i|
