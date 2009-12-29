@@ -24,7 +24,7 @@ class Hugo::Suite
   
   def cloud(name="DEFAULT", &block)
     cloud = Hugo::Cloud.instance
-    cloud.instance_eval(&block)    
+    cloud.instance_eval(&block) if block_given?   
     cloud.name = name
     cloud.deploy
   end
