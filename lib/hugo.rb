@@ -7,7 +7,6 @@ Bundler.require_env
 require 'AWS'
 require 'net/ssh'
 require 'singleton'
-require 'hugo/base'
 require 'hugo/app_server'
 require 'hugo/balancer'
 require 'hugo/database'
@@ -24,41 +23,26 @@ class Hugo::Suite
   end
   
   def cloud(name="DEFAULT", &block)
-    cloud = Hugo::Cloud.instance
+    cloud = Hugo::AppServer.instance
     cloud.name = name
     cloud.instance_eval(&block)
+    cloud.deploy
   end
 end
 
-class Hugo::Cloud
-  include Singleton
-  attr_accessor :name
-  
-  def database(name=self.name, &block)
-    database = Hugo::Database.instance
-    database.name = name
-    database.instance_eval(&block)
-    database.deploy
-    database
-  end
-  
-  def balancer(&block)
-    balancer = Hugo::Balancer.instance
-    balancer.name = self.name
-    balancer.instance_eval(&block)
-    balancer.deploy
-    balancer
-  end
-
-  def app_server(name=self.name, &block)
-    app_server = Hugo::AppServer.instance
-    app_server.name = name
-    app_server.instance_eval(&block)
-    app_server.deploy
-    app_server
-  end
-  
-end
+# class Hugo::Cloud
+#   include Singleton
+#   attr_accessor :name
+#   
+#   def app_server(name=self.name, &block)
+#     app_server = Hugo::AppServer.instance
+#     app_server.name = name
+#     app_server.instance_eval(&block)
+#     app_server.deploy
+#     app_server
+#   end
+#   
+# end
 
 def Hugo(&block) 
   Hugo::Suite.instance.instance_eval(&block)

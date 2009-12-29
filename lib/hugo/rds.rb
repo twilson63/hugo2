@@ -29,6 +29,7 @@ module Hugo
     end
     
     def create
+      
       @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)      
 
       @rds.create_db_instance(
