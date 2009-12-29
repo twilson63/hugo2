@@ -23,6 +23,8 @@ class Hugo::Cloud
 
   def database(name, &block)
     database = Hugo::Database.instance
+    database.db_security_group = self.name
+    
     database.instance_eval(&block) if block_given? 
     database.name = name
 

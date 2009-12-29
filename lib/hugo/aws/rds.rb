@@ -9,7 +9,7 @@ module Hugo
       ZONE = "us-east-1c"
     
       attr_accessor :db, :uri, :server, :user, :password, :instance_class, 
-                    :zone, :size, :status, :create_time
+                    :zone, :size, :status, :create_time, :db_security_group
     
       def initialize(options={})
         # create instance
@@ -26,13 +26,20 @@ module Hugo
         if options["Endpoint"] and options["Endpoint"]["Address"]
           @uri = options["Endpoint"]["Address"] || nil 
         end
-      
+        @db_security_group = options[:db_security_group] || nil
+        if options["DBSecurityGroups"] and options["DBSecurityGroups"]["DBSecurityGroup"]
+          @db_security_group = options["DBSecurityGroups"]["DBSecurityGroup"]["DBSecurityGroupName"] 
+        end
       end
     
       def create
       
         @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)      
-
+        
+        if @db_security_group
+          self.find_or_create_db_security_group(@db_security_group)
+        end
+        
         @rds.create_db_instance(
           :db_instance_identifier => self.server,
           :allocated_storage => self.size,
@@ -41,8 +48,9 @@ module Hugo
           :master_username => self.user,
           :master_user_password => self.password,
           :db_name => self.db,
-          :availability_zone => self.zone) unless self.create_time
-      
+          :availability_zone => self.zone,
+          :db_security_groups => @db_security_group || "default"
+          ) unless self.create_time
         self
       end
     

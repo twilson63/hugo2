@@ -74,7 +74,8 @@ def mock_rds
           "DBInstanceClass"=>"db.m1.small", "DBInstanceStatus"=>"available", 
           "BackupRetentionPeriod"=>"1", "LatestRestorableTime"=>"2009-12-05T18:19:59Z", 
           "DBInstanceIdentifier"=>"myserver", "AllocatedStorage"=>"5", 
-          "AvailabilityZone"=>"us-east-1c", "DBSecurityGroups"=>{ "DBSecurityGroup"=>{"Status"=>"active", "DBSecurityGroupName"=>"default"}}, "DBParameterGroups"=>{"DBParameterGroup"=>{"DBParameterGroupName"=>"default.mysql5.1", "ParameterApplyStatus"=>"in-sync"}}, "PreferredBackupWindow"=>"03:00-05:00" 
+          "AvailabilityZone"=>"us-east-1c", 
+          "DBSecurityGroups"=>{ "DBSecurityGroup"=>{"Status"=>"active", "DBSecurityGroupName"=>"default"}}, "DBParameterGroups"=>{"DBParameterGroup"=>{"DBParameterGroupName"=>"default.mysql5.1", "ParameterApplyStatus"=>"in-sync"}}, "PreferredBackupWindow"=>"03:00-05:00" 
         }
       } 
     }

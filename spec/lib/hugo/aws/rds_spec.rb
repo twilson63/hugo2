@@ -5,7 +5,6 @@ describe Hugo::Aws::Rds do
     mock_ec2
     mock_elb
     mock_rds
-
   end
     
   it "should create a new instance" do    

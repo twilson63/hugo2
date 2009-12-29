@@ -6,12 +6,13 @@ class Hugo::Database
   DEFAULT_SIZE = 5
   DEFAULT_ZONE = 'us-east-1c'
   
-  attr_accessor :name, :server, :user, :password, :size, :zone
+  attr_accessor :name, :server, :user, :password, :size, :zone, :db_security_group
 
   def initialize
     self.size = DEFAULT_SIZE
     self.zone = DEFAULT_ZONE
     self.server = DEFAULT_SERVER
+    self.db_security_group = "default"
   end
   
   def settings(parameters)
@@ -27,7 +28,8 @@ class Hugo::Database
                               :user => self.user,
                               :password => self.password,
                               :size => self.size,
-                              :zone => self.zone
+                              :zone => self.zone,
+                              :db_security_group => self.db_security_group
                                )
     
   end
