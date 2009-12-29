@@ -82,5 +82,25 @@ module Hugo
     def self.find_or_create(options)
       self.find(options[:name]) || self.new(options).create
     end
+
+    def authorize_security_group(db_sec, ec2_sec, owner_id)
+      @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+      @rds.authorize_db_security_group(:db_security_group_name => db_sec, :ec2_security_group_name => ec2_sec, :ec2_security_group_owner_id => owner_id)
+    end
+    
+    def find_or_create_db_security_group(name, description)
+      @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+      begin
+        @security_groups = @rds.describe_db_security_groups(:db_security_group_name => name)
+      rescue
+        @security_groups = @rds.create_db_security_groups(:db_security_group_name => name, :db_security_group_description => description)
+      end
+      @security_groups
+    end
+
+    def destroy_db_security_group(name)
+      @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+      @rds.delete_db_security_group(:db_security_group_name => name)
+    end
   end
 end

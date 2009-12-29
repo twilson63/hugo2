@@ -63,8 +63,9 @@ module Hugo
     
     def find_or_create_security_group(name, description)
       @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
-      @security_groups = @ec2.describe_security_groups(:group_name => name)
-      if @security_groups.empty?
+      begin
+        @security_groups = @ec2.describe_security_groups(:group_name => name)
+      rescue
         @security_groups = @ec2.create_security_groups(:group_name => name, :group_description => description)
       end
       @security_groups

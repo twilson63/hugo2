@@ -80,9 +80,18 @@ def mock_rds
     }
   }
   
+  create_db_security_group = {"CreateDBSecurityGroupResult"=>{"DBSecurityGroup"=>{"OwnerId"=>"XXXXXXXXXXXXXXX", "DBSecurityGroupName"=>"beer", "IPRanges"=>nil, "DBSecurityGroupDescription"=>"A light beverage", "EC2SecurityGroups"=>nil}}, "ResponseMetadata"=>{"RequestId"=>"cc934f2f-f4a9-11de-ba6b-0ba63aeeddfe"}, "xmlns"=>"http://rds.amazonaws.com/admin/2009-10-16/"}
+  describe_db_security_groups = {"DescribeDBSecurityGroupsResult"=>{"DBSecurityGroups"=>{"DBSecurityGroup"=>{"OwnerId"=>"XXXXXXXXXXXX", "DBSecurityGroupName"=>"beer", "IPRanges"=>nil, "DBSecurityGroupDescription"=>"A light beverage", "EC2SecurityGroups"=>{"EC2SecurityGroup"=>{"Status"=>"authorized", "EC2SecurityGroupName"=>"default", "EC2SecurityGroupOwnerId"=>"XXXXXXXXXXXX"}}}}}, "ResponseMetadata"=>{"RequestId"=>"XXXXXXXXX"}, "xmlns"=>"http://rds.amazonaws.com/admin/2009-10-16/"}
+  db_authorize_security_group = {"AuthorizeDBSecurityGroupIngressResult"=>{"DBSecurityGroup"=>{"OwnerId"=>"XXXXXXXXXXXXXX", "DBSecurityGroupName"=>"beer", "IPRanges"=>nil, "DBSecurityGroupDescription"=>"A light beverage", "EC2SecurityGroups"=>{"EC2SecurityGroup"=>{"Status"=>"authorizing", "EC2SecurityGroupName"=>"default", "EC2SecurityGroupOwnerId"=>"XXXXXXXXXX"}}}}, "ResponseMetadata"=>{"RequestId"=>"5920e8b0-f4aa-11de-8dc1-73435d6ae588"}, "xmlns"=>"http://rds.amazonaws.com/admin/2009-10-16/"}
+  delete_db_security_group = {"ResponseMetadata"=>{"RequestId"=>"2e4f133b-f4ac-11de-bce4-4f8690d51058"}, "xmlns"=>"http://rds.amazonaws.com/admin/2009-10-16/"}
+  
   @mock_rds.stub!(:create_db_instance).and_return(instance)
   @mock_rds.stub!(:describe_db_instances).and_return(instance)
   @mock_rds.stub!(:delete_db_instance).and_return(instance)
+  @mock_rds.stub!(:create_db_security_group).and_return(create_db_security_group)
+  @mock_rds.stub!(:authorize_db_security_group).and_return(db_authorize_security_group)
+  @mock_rds.stub!(:delete_db_security_group).and_return(delete_db_security_group)
+  @mock_rds.stub!(:describe_db_security_groups).and_return(describe_db_security_groups)
 
   AWS::RDS::Base.stub!(:new).and_return(@mock_rds)
   

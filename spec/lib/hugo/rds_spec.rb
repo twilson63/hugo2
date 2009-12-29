@@ -28,7 +28,18 @@ describe Hugo::Rds do
   it "should provide uri" do
     Hugo::Rds.find('test').uri.should_not be_nil
   end
+
+  it "should find or create db security group" do
+    @rds = Hugo::Rds.find('i-12345678')
+    @rds.find_or_create_db_security_group('test', 'test description').should_not be_empty
+  end
   
-  # it "should provide Created Date"
-  # it "should find or create rds instance"
+  it "should destroy a db security group" do
+    Hugo::Rds.find('i-12345678').destroy_db_security_group('test').should be_true
+  end
+  
+  it "should authorize a ec2 security group" do
+    @rds = Hugo::Rds.find('i-12345678')
+    @rds.authorize_security_group('test', 'test', '12334').should_not be_empty
+  end
 end
