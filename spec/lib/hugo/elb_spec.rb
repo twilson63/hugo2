@@ -6,7 +6,6 @@ describe Hugo::Elb do
     mock_elb
     mock_rds
 
-
   end
       
   it "should create a new instance" do    
@@ -33,5 +32,4 @@ describe Hugo::Elb do
   it "should remove ec2 instance" do
     Hugo::Elb.find('test').remove('i-12345678').instances.length.should == 0
   end
-
 end

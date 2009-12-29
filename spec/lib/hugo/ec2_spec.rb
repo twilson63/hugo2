@@ -15,6 +15,11 @@ describe Hugo::Ec2 do
     @mock.stub!(:describe_instances).and_return(instance)
     @mock.stub!(:terminate_instances).and_return(instance)
   
+    security_group = {"group_name"=>"test", "group_description"=>"test description"}
+    @mock.stub!(:create_security_groups).and_return(security_group)
+    @mock.stub!(:describe_security_groups).and_return(security_group)
+    @mock.stub!(:delete_security_group).and_return(security_group)
+  
     AWS::EC2::Base.stub!(:new).and_return(@mock)
   end
         
@@ -22,19 +27,28 @@ describe Hugo::Ec2 do
     @ec2 = Hugo::Ec2.new()
     @ec2.save.should be_true  
   end
-  # 
+
   it "should terminate instance" do
     Hugo::Ec2.find('i-12345678').destroy.should be_true
   end
-  # 
+
   it "should find instance" do
     Hugo::Ec2.find('i-12345678').should_not be_nil
   end
-  # 
+
   it "should return all instances" do
     Hugo::Ec2.all.length.should == 1
   end
-  # 
+  
+  it "should find or create security group" do
+    @ec2 = Hugo::Ec2.find('i-12345678')
+    @ec2.find_or_create_security_group('test', 'test description').should_not be_empty
+  end
+  
+  it "should destroy a security group" do
+    Hugo::Ec2.find('i-12345678').destroy_security_group('test').should be_true
+  end
+  #
   # it "should deploy app" do
   #   
   # end

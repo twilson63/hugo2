@@ -61,6 +61,20 @@ module Hugo
       end
     end
     
+    def find_or_create_security_group(name, description)
+      @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+      @security_groups = @ec2.describe_security_groups(:group_name => name)
+      if @security_groups.empty?
+        @security_groups = @ec2.create_security_groups(:group_name => name, :group_description => description)
+      end
+      @security_groups
+    end
+
+    def destroy_security_group(name)
+      @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+      @ec2.delete_security_group(:group_name => name)
+    end
+
     def self.all
       @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
       @ec2.describe_instances().reservationSet.item[0].instancesSet.item.map { |i| self.new(i) }
@@ -78,6 +92,5 @@ module Hugo
         self.new(options).create
       end
     end
-    
   end
 end
