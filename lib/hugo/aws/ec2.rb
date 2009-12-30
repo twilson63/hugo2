@@ -30,7 +30,7 @@ module Hugo
         @image_id = options["imageId"] || AMI
         @create_time = options["launchTime"] || nil
       
-        @key_name = options["key_name"] || options["keyName"] || KEY_NAME
+        @key_name = options[:key_name] || options["keyName"] || KEY_NAME
         if options["instanceState"] and options["instanceState"]["name"]
           @status = options["instanceState"]["name"]
         else
@@ -64,8 +64,8 @@ module Hugo
         self.create
       end
     
-      def ssh(commands, dna = nil)
-        Net::SSH.start(self.uri, "ubuntu", :keys => self.key_name) do |ssh|
+      def ssh(commands, dna = nil, key_pair_file="~/.ec2/ec2-keypair")
+        Net::SSH.start(self.uri, "ubuntu", :keys => key_pair_file) do |ssh|
           if dna
             ssh.exec!("echo \"#{dna.to_json.gsub('"','\"')}\" > ~/dna.json")
           end

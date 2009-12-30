@@ -64,6 +64,7 @@ module Hugo
       end
     
       def remove(instance)
+        
         @elb = AWS::ELB::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
         @elb.deregister_instances_from_load_balancer(
           :instances => [instance],
