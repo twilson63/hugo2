@@ -17,7 +17,7 @@ module Hugo
         @server = options[:server] || options["DBInstanceIdentifier"]
         @db = options[:name] || options["DBName"]
         @user = options[:user] || options["MasterUsername"]
-        @password = options[:password] || "****"
+        @password = options[:password] if options[:password]
         @size = options[:size] || options["AllocatedStorage"] || DEFAULT_SIZE
         @instance_class = options[:instance_class] || options["DBInstanceClass"] || INSTANCE_CLASS
         @zone = options[:zone] || options["AvailabilityZone"] || ZONE
@@ -90,8 +90,9 @@ module Hugo
       end
 
       def self.find_or_create(options)
-        self.find(options[:server]) || self.new(options).create
-         
+        rds = self.find(options[:server]) || self.new(options).create
+        rds.password = options[:password]
+        rds
       end
 
       def authorize_security_group(db_sec, ec2_sec, owner_id)

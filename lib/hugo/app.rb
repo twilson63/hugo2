@@ -80,38 +80,28 @@ private
     commands << 'sudo gem install chef-deploy --no-ri --no-rdoc'
     commands << 'sudo gem install git --no-ri --no-rdoc'
     commands << "git clone #{self.cookbook} ~/hugo-repos"
-    # Setup base role
-    dna = { :run_list => ["role[web-base]"],
-      :package_list => self.package_list,
-      :gem_list => self.gem_list,
-      :git => self.cookbook,
-      :github => {  :url => self.github_url, 
-                    :publickey => self.publickey, 
-                    :privatekey => self.privatekey},
-      :access_key => Hugo::Aws::Ec2::ACCESS_KEY,
-      :secret_key => Hugo::Aws::Ec2::SECRET_KEY,
-      :apache => { :listen_ports => [self.port, self.ssl] }
-  
-    }
-  
-    commands << 'sudo chef-solo -c /home/ubuntu/hugo-repos/config/solo.rb -j /home/ubuntu/dna.json'
     Hugo::Aws::Ec2.find(instance_id).ssh(commands, dna, self.key_pair_file)
   end
   
   def deploy_ec2
   
     commands = []
-    #commands << "git clone #{@@hugo_config['git']} ~/hugo-repos"
-    #commands << "cd hugo-repos && git fetch && git merge"
     commands << "cd hugo-repos && git pull"
     commands << 'sudo chef-solo -c /home/ubuntu/hugo-repos/config/solo.rb -j /home/ubuntu/dna.json'
-
+    
+    ports = [self.port]
+    ports << self.ssl unless self.ssl.nil?
+      
   
     dna = { :run_list => self.run_list,
+      :package_list => self.package_list,
+      :gem_list => self.gem_list,
+
       :application => self.name, 
       :customer => self.cloud_name,
       :database => { 
         :uri => self.db.uri, 
+        :name => self.db.db,
         :user => self.db.user, 
         :password => self.db.password }, 
       :web => { :port => self.port, :ssl => self.ssl }, 
@@ -121,6 +111,7 @@ private
                     :privatekey => self.privatekey},
       :access_key => Hugo::Aws::Ec2::ACCESS_KEY,
       :secret_key => Hugo::Aws::Ec2::SECRET_KEY,
+      :apache => { :listen_ports =>  ports },
       :app => self.deploy_info
     }
   
