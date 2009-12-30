@@ -54,36 +54,31 @@ class Hugo::Cloud
     self.app_info.instance_eval(&block) if block_given?    
   end
   
-  
-  def deploy
-    # Find or Create Security Group
-    # Hugo::Aws::Ec2.find_or_create_security_group(self.security_group, self.security_group)
-    # Need to compare balancer instances to instances
-    if self.instances > lb.instances.length
-      build_ec2(self.instances - lb.instances.length)
-    elsif self.instances < lb.instances.length
-      delete_ec2(lb.instances.length - self.instances)
-    end
-    puts "EC2 Created"
-    deploy_ec2      
-  end
-  
+    
   def print
-    puts <<REPORT
+    if db
+      puts <<REPORT
 ------------------------    
 DATABASE: #{db.db}
   User: #{db.user}
   Password: #{db.password}
   Uri: #{db.uri}
+REPORT
+    end
+    
+    if lb
+      puts <<REPORT
 -----------------------  
 Balancer: #{lb.name}
   Uri: #{lb.uri}
   Servers: #{lb.instances.length}
------------------------      
 REPORT
+    end
+  
     lb.instances.each do |i|
       ec2 = Hugo::Aws::Ec2.find(i)
       puts <<REPORT
+-----------------------      
 Id: #{ec2.name}
 Uri: #{ec2.uri}
 Type: #{ec2.type}

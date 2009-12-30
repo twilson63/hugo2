@@ -50,7 +50,6 @@ module Hugo
         result = @ec2.run_instances(:image_id => self.image_id, :key_name => self.key_name, 
           :max_count => 1,
           :availability_zone => self.zone) unless self.create_time
-        puts result.inspect
         set_attributes(result.instancesSet.item[0])
         self
       end

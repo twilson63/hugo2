@@ -80,7 +80,7 @@ private
     commands << 'sudo gem install chef-deploy --no-ri --no-rdoc'
     commands << 'sudo gem install git --no-ri --no-rdoc'
     commands << "git clone #{self.cookbook} ~/hugo-repos"
-    Hugo::Aws::Ec2.find(instance_id).ssh(commands, dna, self.key_pair_file)
+    Hugo::Aws::Ec2.find(instance_id).ssh(commands, :dna => nil, :key_pair_file => self.key_pair_file)
   end
   
   def deploy_ec2
@@ -92,18 +92,20 @@ private
     ports = [self.port]
     ports << self.ssl unless self.ssl.nil?
       
-  
+    database_info = {}
+    database_info = { 
+      :uri => self.db.uri, 
+      :name => self.db.db,
+      :user => self.db.user, 
+      :password => self.db.password } unless self.db.nil?
+      
     dna = { :run_list => self.run_list,
       :package_list => self.package_list,
       :gem_list => self.gem_list,
 
       :application => self.name, 
       :customer => self.cloud_name,
-      :database => { 
-        :uri => self.db.uri, 
-        :name => self.db.db,
-        :user => self.db.user, 
-        :password => self.db.password }, 
+      :database => database_info, 
       :web => { :port => self.port, :ssl => self.ssl }, 
       :git => self.cookbook,
       :github => {  :url => self.github_url, 
