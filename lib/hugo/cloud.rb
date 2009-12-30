@@ -32,7 +32,6 @@ class Hugo::Cloud
     database.instance_eval(&block) if block_given? 
     
     self.db = database.deploy
-    puts "Database Deployed!"
     self.db
   end
   
@@ -43,7 +42,6 @@ class Hugo::Cloud
     self.port = balancer.port
     self.ssl = balancer.ssl_port
     self.lb = balancer.deploy
-    puts "Balancer Deployed!"
     self.lb
   end
   
