@@ -71,12 +71,28 @@ class Hugo::Cloud
   end
   
   def print
-    puts "---- DB Info ----"
-    puts self.db.inspect
-    puts "---- ELB Info ----"
-    puts self.lb.inspect
-    puts "---- App Info ----"
-    puts self.app_info.inspect
+    puts <<REPORT
+------------------------    
+DATABASE: #{db.db}
+  User: #{db.user}
+  Password: #{db.password}
+  Uri: #{db.uri}
+-----------------------  
+Balancer: #{lb.name}
+  Uri: #{lb.uri}
+  Servers: #{lb.instances.length}
+-----------------------      
+REPORT
+    lb.instances.each do |i|
+      ec2 = Hugo::Aws::Ec2.find(i)
+      puts <<REPORT
+Id: #{ec2.name}
+Uri: #{ec2.uri}
+Type: #{ec2.type}
+Zone: #{ec2.zone}
+
+REPORT
+    end
   end
   
   
