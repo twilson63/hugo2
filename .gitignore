@@ -4,5 +4,7 @@ vendor/gems/*
 !example/myhugo.rb
 example/gmms.rb
 example/gmms.yml
-*.rb
-*.yml
+gmms.rb
+oregano.rb
+gmms.yml
+oregano.yml
