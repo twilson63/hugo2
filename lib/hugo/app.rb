@@ -2,13 +2,7 @@ module Hugo; end
 
 class Hugo::App
   include Singleton
-
-
-  attr_accessor :name, :lb, :db, :cloud_name, :key_name, :uri, :type, :zone, :image_id, 
-                :port, :ssl, :application, :cookbook,
-                :github_url, :publickey, :privatekey,
-                :gem_list, :package_list, :run_list, :deploy_info,
-                :security_group, :key_pair_file 
+  include Hugo::Mixin::ParamsValidate
 
 
   def servers(instances=1)
@@ -30,6 +24,100 @@ class Hugo::App
     deploy_ec2
     puts "Deploy Completed"    
   end
+  
+  def name(arg=nil)
+    set_or_return(:name, arg, :kind_of => [String]) 
+  end
+  
+  def lb(arg=nil)
+    set_or_return(:lb, arg, :kind_of => [Hugo::Aws::Elb]) 
+  end
+  
+  def db(arg=nil)
+    set_or_return(:db, arg, :kind_of => [Hugo::Aws::Rds]) 
+  end
+  
+  def uri(arg=nil)
+    set_or_return(:uri, arg, :kind_of => [String]) 
+  end
+  
+  def type(arg=nil)
+    set_or_return(:type, arg, :kind_of => [String]) 
+  end
+
+  def zone(arg=nil)
+    set_or_return(:zone, arg, :kind_of => [String]) 
+  end
+
+  def image_id(arg=nil)
+    set_or_return(:image_id, arg, :kind_of => [String]) 
+  end
+
+  def port(arg=nil)
+    set_or_return(:port, arg, :kind_of => [String]) 
+  end
+
+  def ssl(arg=nil)
+    set_or_return(:ssl, arg, :kind_of => [String]) 
+  end
+
+  def application(arg=nil)
+    set_or_return(:application, arg, :kind_of => [String]) 
+  end
+
+  def security_group(arg=nil)
+    set_or_return(:security_group, arg, :kind_of => [String]) 
+  end
+    
+  def cloud_name(arg=nil)
+    set_or_return(:cloud_name, arg, :kind_of => [String])
+  end
+  
+  def key_name(arg=nil)
+    set_or_return(:key_name, arg, :kind_of => [String])
+  end
+
+  def cookbook(arg=nil)
+    set_or_return(:cookbook, arg, :kind_of => [String])
+  end
+  
+  def key_pair_file(arg=nil)
+    set_or_return(:key_pair_file, arg, :kind_of => [String])    
+  end
+
+  def port(arg=nil)
+    set_or_return(:port, arg, :kind_of => [String])    
+  end
+  
+  def github_url(arg=nil)
+    set_or_return(:github_url, arg, :kind_of => [String])        
+  end
+  
+  def privatekey(arg=nil)
+    set_or_return(:privatekey, arg, :kind_of => [String])            
+  end
+
+  def publickey(arg=nil)
+    set_or_return(:publickey, arg, :kind_of => [String])            
+  end
+
+  def gem_list(arg=nil)
+    set_or_return(:gem_list, arg, :kind_of => [Array])            
+  end
+
+  def package_list(arg=nil)
+    set_or_return(:package_list, arg, :kind_of => [Array])            
+  end
+  
+  def run_list(arg=nil)
+    set_or_return(:run_list, arg, :kind_of => [Array])                
+  end
+  
+  def deploy_info(arg=nil)
+    set_or_return(:deploy_info, arg, :kind_of => [Hash])                    
+  end
+  
+  
   
   
   

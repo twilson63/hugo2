@@ -2,6 +2,8 @@ module Hugo; end
   
 class Hugo::Balancer
   include Singleton
+  include Hugo::Mixin::ParamsValidate
+  
   DEFAULT_ZONE = 'us-east-1c'
   DEFAULT_PORT = '8080'
   DEFAULT_WEB = '80'
@@ -9,15 +11,13 @@ class Hugo::Balancer
   DEFAULT_SSL_PORT = '8443'
   DEFAULT_SSL_WEB = '443'
   
-  attr_accessor :name, :zone, :port, :web, :type, :ssl_port, :ssl_web
-
   def initialize
-    self.zone = DEFAULT_ZONE
-    self.port = DEFAULT_PORT
-    self.web = DEFAULT_WEB
-    self.ssl_port = DEFAULT_SSL_PORT
-    self.ssl_web = DEFAULT_SSL_WEB
-    self.type = DEFAULT_TYPE
+    zone DEFAULT_ZONE
+    port DEFAULT_PORT
+    web DEFAULT_WEB
+    ssl_port DEFAULT_SSL_PORT
+    ssl_web DEFAULT_SSL_WEB
+    type DEFAULT_TYPE
   end
   
   def deploy
@@ -27,5 +27,33 @@ class Hugo::Balancer
                               { :instance_port => self.ssl_port, :protocol =>"TCP", :load_balancer_port => self.ssl_web}]
     )
   end
-    
+  
+  def name(arg=nil)
+    set_or_return(:name, arg, :kind_of => [String])     
+  end
+  
+  def zone(arg=nil)
+    set_or_return(:zone, arg, :kind_of => [String])     
+  end
+
+  def port(arg=nil)
+    set_or_return(:port, arg, :kind_of => [String])     
+  end
+
+  def web(arg=nil)
+    set_or_return(:web, arg, :kind_of => [String])     
+  end
+
+  def type(arg=nil)
+    set_or_return(:type, arg, :kind_of => [String])     
+  end
+
+  def ssl_port(arg=nil)
+    set_or_return(:ssl_port, arg, :kind_of => [String])     
+  end
+  
+  def ssl_web(arg=nil)
+    set_or_return(:ssl_web, arg, :kind_of => [String])     
+  end
+  
 end

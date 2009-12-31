@@ -8,6 +8,7 @@ require 'AWS'
 require 'net/ssh'
 require 'json'
 require 'singleton'
+require File.dirname(__FILE__) + '/hugo/mixin/params_validate'
 require File.dirname(__FILE__) + '/hugo/cloud'
 require File.dirname(__FILE__) + '/hugo/balancer'
 require File.dirname(__FILE__) + '/hugo/database'
@@ -26,10 +27,8 @@ class Hugo::Suite
   
   def cloud(name="DEFAULT", &block)
     cloud = Hugo::Cloud.instance
-    cloud.security_group = name
-    cloud.name = name
+    cloud.name name
     cloud.instance_eval(&block) if block_given?   
-    #cloud.deploy
   end
 end
 
