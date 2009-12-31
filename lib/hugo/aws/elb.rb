@@ -83,12 +83,14 @@ module Hugo
         @elb = AWS::ELB::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
         
         result = nil
-        
+    
         @elb.describe_load_balancers().DescribeLoadBalancersResult.LoadBalancerDescriptions.member.each do |m|
           result = self.new(m) if m.LoadBalancerName == balancer
         end
         
         result
+      rescue
+        nil
       end
     
       def self.find_or_create(options)
