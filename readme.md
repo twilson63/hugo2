@@ -46,3 +46,4 @@ Make sure you have a keypair generated for you AWS Account!
               :restart_command => "gem bundle && touch tmp/restart.txt" 
           
         end
+      end
