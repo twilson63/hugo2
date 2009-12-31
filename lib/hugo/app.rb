@@ -158,7 +158,7 @@ private
     commands = []
     commands << 'sudo apt-get update -y'
     commands << 'sudo apt-get install ruby ruby1.8-dev libopenssl-ruby1.8 rdoc ri irb build-essential git-core xfsprogs -y'
-    commands << 'if [ -e rubygems-1.3.5.tgz ]; then echo "RubyGems Already Exists"; else; wget http://rubyforge.org/frs/download.php/60718/rubygems-1.3.5.tgz && tar zxf rubygems-1.3.5.tgz; fi'
+    commands << 'wget http://rubyforge.org/frs/download.php/60718/rubygems-1.3.5.tgz && tar zxf rubygems-1.3.5.tgz'
     commands << 'cd rubygems-1.3.5 && sudo ruby setup.rb && sudo ln -sfv /usr/bin/gem1.8 /usr/bin/gem'
     commands << 'sudo gem update --system'
     commands << 'sudo gem install gemcutter --no-ri --no-rdoc'
