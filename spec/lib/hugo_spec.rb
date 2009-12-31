@@ -28,21 +28,18 @@ describe "Hugo DSL" do
   it "should deploy infrastructure" do
     block = lambda do
       
-      cloud "gmms" do 
-        @application = "sentinel"
-        @instances   =  2
-                
-        balancer do 
-          
-        end
+      cloud "gmms" do                 
+        balancer 
         
         database "sentinel" do 
-          @user       =  "admin"
-          @password   =  "mypassword"  
+          server     "jackhq"
+          user       "admin"
+          password   "mypassword"  
         end
         
-        
-        @gem_list = [{:name => "rack"}]                  
+        app "sentinel" do
+          gem_list = [{:name => "rack"}]                  
+        end
       end
     end
     

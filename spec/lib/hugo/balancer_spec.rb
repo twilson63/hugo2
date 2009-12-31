@@ -8,13 +8,7 @@ describe "Hugo Balancer" do
   it "should be valid" do
     block = lambda do
       cloud "my_cloud" do 
-        @instances = 1
         balancer
-        database "testapp" do 
-          @server = "serverx"
-          @user = "test_user"
-          @password = "test_password"
-        end
       end
     end
     
@@ -35,7 +29,7 @@ describe "Hugo Balancer" do
 
   it "should find or create balancer" do
     lb = Hugo::Balancer.instance
-    lb.name = "myserver"
+    lb.name "myserver"
     lb.deploy.should be_a_kind_of(Hugo::Aws::Elb)
     
   end

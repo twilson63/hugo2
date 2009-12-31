@@ -23,10 +23,10 @@ describe Hugo::Aws::Ec2 do
     AWS::EC2::Base.stub!(:new).and_return(@mock)
   end
         
-  it "should create a new instance" do  
-    @ec2 = Hugo::Aws::Ec2.new()
-    @ec2.save.should be_true  
-  end
+  # it "should create a new instance" do  
+  #   @ec2 = Hugo::Aws::Ec2.new()
+  #   @ec2.save.should be_true  
+  # end
 
   it "should terminate instance" do
     Hugo::Aws::Ec2.find('i-12345678').destroy.should be_true
