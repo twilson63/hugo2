@@ -158,16 +158,16 @@ private
     commands = []
     commands << 'sudo apt-get update -y'
     commands << 'sudo apt-get install ruby ruby1.8-dev libopenssl-ruby1.8 rdoc ri irb build-essential git-core xfsprogs -y'
-    commands << 'if [ -e rubygems-1.3.5.tgz ]; then echo "RubyGems Already Exists"; else wget http://rubyforge.org/frs/download.php/60718/rubygems-1.3.5.tgz && tar zxf rubygems-1.3.5.tgz; fi'
-    commands << 'if [ -d rubygems-1.3.5 ]; then echo "RubyGems Already Exists"; else cd rubygems-1.3.5 && sudo ruby setup.rb && sudo ln -sfv /usr/bin/gem1.8 /usr/bin/gem; fi'
+    commands << 'if [ -e rubygems-1.3.5.tgz ]; then echo "RubyGems Already Exists"; else; wget http://rubyforge.org/frs/download.php/60718/rubygems-1.3.5.tgz && tar zxf rubygems-1.3.5.tgz; fi'
+    commands << 'cd rubygems-1.3.5 && sudo ruby setup.rb && sudo ln -sfv /usr/bin/gem1.8 /usr/bin/gem'
     commands << 'sudo gem update --system'
-    commands << 'if [ -d rubygems-1.3.5 ]; then echo "GemCutter Already Exists"; else sudo gem install gemcutter --no-ri --no-rdoc; fi'
-    commands << 'if [ -d rubygems-1.3.5 ]; then echo "Tumble Already Exists"; else sudo gem tumble; fi'
-    commands << 'if [ -d rubygems-1.3.5 ]; then echo "Chef Already Exists"; else sudo gem install chef ohai --no-ri --no-rdoc; fi'
-    commands << 'if [ -d rubygems-1.3.5 ]; then echo "Github Already Exists"; else sudo gem source -a http://gems.github.com; fi'
-    commands << 'if [ -d rubygems-1.3.5 ]; then echo "Chef Deploy Already Exists"; else sudo gem install chef-deploy --no-ri --no-rdoc; fi'
-    commands << 'if [ -d rubygems-1.3.5 ]; then echo "Git Already Exists"; else sudo gem install git --no-ri --no-rdoc; fi'
-    commands << "if [ -d hugo-repos ]; then echo 'hugo-repo exits'; else git clone #{self.cookbook} ~/hugo-repos; fi"
+    commands << 'sudo gem install gemcutter --no-ri --no-rdoc'
+    commands << 'sudo gem install chef ohai --no-ri --no-rdoc'
+    commands << 'sudo gem source -a http://gems.github.com'
+    commands << 'sudo gem install chef-deploy --no-ri --no-rdoc'
+    commands << 'sudo gem install git --no-ri --no-rdoc'
+    commands << "git clone #{self.cookbook} ~/hugo-repos"
+    puts key_pair_file
     Hugo::Aws::Ec2.find(instance_id).ssh(commands, nil, key_pair_file)
   end
   
