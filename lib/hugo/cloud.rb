@@ -17,17 +17,16 @@ class Hugo::Cloud
     database.name db_name
     
     database.instance_eval(&block) if block_given? 
+    db database.deploy 
     
-    db database.deploy
-    db
+    
   end
   
   def balancer(&block)
     balancer = Hugo::Balancer.instance
     balancer.name name
     balancer.instance_eval(&block) if block_given? 
-    lb balancer.deploy
-    lb
+    lb balancer.deploy 
   end
   
   def app(name, &block)
@@ -36,8 +35,25 @@ class Hugo::Cloud
     app_info.lb lb
     app_info.db db
     app_info.cloud_name name
-    app_info.instance_eval(&block) if block_given?    
+    app_info.instance_eval(&block) if block_given? 
+    cloud_app app_info
+    
   end
+  
+  def deploy
+    if cloud_app
+      cloud_app.setup
+      cloud_app.deploy
+    end
+    
+  end
+  
+  def delete
+    [db, cloud_app, lb].each do |s|
+      s.destroy if s
+    end
+  end
+  
   
     
   def print
@@ -58,11 +74,10 @@ Balancer: #{lb.name}
   Uri: #{lb.uri}
   Servers: #{lb.instances.length}
 REPORT
-    end
   
-    lb.instances.each do |i|
-      ec2 = Hugo::Aws::Ec2.find(i)
-      puts <<REPORT
+      lb.instances.each do |i|
+        ec2 = Hugo::Aws::Ec2.find(i)
+        puts <<REPORT
 -----------------------      
 Id: #{ec2.name}
 Uri: #{ec2.uri}
@@ -70,7 +85,9 @@ Type: #{ec2.type}
 Zone: #{ec2.zone}
 
 REPORT
+      end
     end
+
   end
 
   def name(arg=nil)
@@ -83,6 +100,10 @@ REPORT
   
   def lb(arg=nil)
     set_or_return(:lb, arg, :kind_of => [Hugo::Aws::Elb])    
+  end
+
+  def cloud_app(arg=nil)
+    set_or_return(:cloud_app, arg, :kind_of => [Hugo::App])    
   end
   
   

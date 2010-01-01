@@ -6,11 +6,13 @@ class Hugo::App
 
 
   def servers(instances=1)
-    if instances > lb.instances.length
-      build_ec2(instances - lb.instances.length)
-    elsif instances < lb.instances.length
-      delete_ec2(lb.instances.length - instances)
-    end    
+    if lb
+      if instances > lb.instances.length
+        build_ec2(instances - lb.instances.length)
+      elsif instances < lb.instances.length
+        delete_ec2(lb.instances.length - instances)
+      end    
+    end
   end
   
   def setup
@@ -24,6 +26,13 @@ class Hugo::App
     deploy_ec2
     puts "Deploy Completed"    
   end
+  
+  def destroy
+    lb.instances.each do |i|
+      Hugo::Aws::Ec2.find(i).destroy
+    end    
+  end
+  
   
   def name(arg=nil)
     set_or_return(:name, arg, :kind_of => [String]) 

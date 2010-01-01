@@ -27,12 +27,8 @@ Make sure you have a keypair generated for you AWS Account!
         
         app "sample_app" do
           key_name "my-keypair"
-          servers 2
           
-          cookbook "git://github.com/twilson63/hugo-cookbooks.git"
-          
-          setup
-          
+          cookbook "git://github.com/twilson63/hugo-cookbooks.git"          
           key_pair_file     "~/.ec2/my-keypair"
           port              "8080"
           github_url        "git@github.com:twilson63"
@@ -44,6 +40,12 @@ Make sure you have a keypair generated for you AWS Account!
           
           deploy_info :web_server_name => "sample_app.jackhq.com",
               :restart_command => "gem bundle && touch tmp/restart.txt" 
+
+          servers 2
           
         end
+        
+        deploy
+        
+        print
       end
