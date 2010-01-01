@@ -10,20 +10,20 @@ class Hugo::Database
   
 
   def initialize
-    self.size DEFAULT_SIZE
-    self.zone DEFAULT_ZONE
-    self.server DEFAULT_SERVER
-    self.db_security_group "default"
+    size DEFAULT_SIZE
+    zone DEFAULT_ZONE
+    server DEFAULT_SERVER
+    db_security_group "default"
   end
   
   def deploy
-    Hugo::Aws::Rds.find_or_create( :name => self.name,
-                              :server => self.server,
-                              :user => self.user,
-                              :password => self.password,
-                              :size => self.size,
-                              :zone => self.zone,
-                              :db_security_group => self.db_security_group
+    Hugo::Aws::Rds.find_or_create( :name => name,
+                              :server => server,
+                              :user => user,
+                              :password => password,
+                              :size => size,
+                              :zone => zone,
+                              :db_security_group => db_security_group
                                )
   end
   

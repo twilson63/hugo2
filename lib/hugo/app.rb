@@ -132,10 +132,10 @@ private
   end
   
   def create_ec2
-    ec2 = Hugo::Aws::Ec2.new(:type => self.type, 
-                    :zone => self.zone, 
-                    :image_id => self.image_id,
-                    :key_name => self.key_name,
+    ec2 = Hugo::Aws::Ec2.new(:type => type, 
+                    :zone => zone, 
+                    :image_id => image_id,
+                    :key_name => key_name,
                     :security_group => "default").create
   
     new_ec2 = nil
@@ -167,7 +167,6 @@ private
     commands << 'sudo gem install chef-deploy --no-ri --no-rdoc'
     commands << 'sudo gem install git --no-ri --no-rdoc'
     commands << "git clone #{self.cookbook} ~/hugo-repos"
-    puts key_pair_file
     Hugo::Aws::Ec2.find(instance_id).ssh(commands, nil, key_pair_file)
   end
   
@@ -177,32 +176,32 @@ private
     commands << "cd hugo-repos && git pull"
     commands << 'sudo chef-solo -c /home/ubuntu/hugo-repos/config/solo.rb -j /home/ubuntu/dna.json'
     
-    ports = [self.port]
-    ports << self.ssl unless self.ssl.nil?
+    ports = [port]
+    ports << ssl unless ssl.nil?
       
     database_info = {}
     database_info = { 
-      :uri => self.db.uri, 
-      :name => self.db.db,
-      :user => self.db.user, 
-      :password => self.db.password } unless self.db.nil?
+      :uri => db.uri, 
+      :name => db.db,
+      :user => db.user, 
+      :password => db.password } unless db.nil?
       
-    dna = { :run_list => self.run_list,
-      :package_list => self.package_list,
-      :gem_list => self.gem_list,
+    dna = { :run_list => run_list,
+      :package_list => package_list,
+      :gem_list => gem_list,
 
-      :application => self.name, 
-      :customer => self.cloud_name,
+      :application => name, 
+      :customer => cloud_name,
       :database => database_info, 
-      :web => { :port => self.port, :ssl => self.ssl }, 
-      :git => self.cookbook,
-      :github => {  :url => self.github_url, 
-                    :publickey => self.publickey, 
-                    :privatekey => self.privatekey},
+      :web => { :port => port, :ssl => ssl }, 
+      :git => cookbook,
+      :github => {  :url => github_url, 
+                    :publickey => publickey, 
+                    :privatekey => privatekey},
       :access_key => Hugo::Aws::Ec2::ACCESS_KEY,
       :secret_key => Hugo::Aws::Ec2::SECRET_KEY,
       :apache => { :listen_ports =>  ports },
-      :app => self.deploy_info
+      :app => deploy_info
     }
   
     lb.instances.each do |i|

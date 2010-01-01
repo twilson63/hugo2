@@ -21,10 +21,10 @@ class Hugo::Balancer
   end
   
   def deploy
-    Hugo::Aws::Elb.find_or_create(:name => self.name,
-                            :zones => self.zone,
-                            :listeners => [{ :instance_port => self.port, :protocol =>"HTTP", :load_balancer_port => self.web}, 
-                              { :instance_port => self.ssl_port, :protocol =>"TCP", :load_balancer_port => self.ssl_web}]
+    Hugo::Aws::Elb.find_or_create(:name => name,
+                            :zones => zone,
+                            :listeners => [{ :instance_port => port, :protocol =>"HTTP", :load_balancer_port => web}, 
+                              { :instance_port => ssl_port, :protocol =>"TCP", :load_balancer_port => ssl_web}]
     )
   end
   

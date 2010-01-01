@@ -9,25 +9,25 @@ class Hugo::Cloud
 
   end
 
-  def database(name, &block)
+  def database(db_name, &block)
     database = Hugo::Database.instance
     
-    database.db_security_group self.name
-    database.server self.name
-    database.name name
+    database.db_security_group name
+    database.server name
+    database.name db_name
     
     database.instance_eval(&block) if block_given? 
     
-    self.db database.deploy
-    self.db
+    db database.deploy
+    db
   end
   
   def balancer(&block)
     balancer = Hugo::Balancer.instance
-    balancer.name self.name
+    balancer.name name
     balancer.instance_eval(&block) if block_given? 
-    self.lb balancer.deploy
-    self.lb
+    lb balancer.deploy
+    lb
   end
   
   def app(name, &block)
