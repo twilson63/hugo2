@@ -15,6 +15,11 @@ Make sure you have a keypair generated for you AWS Account!
 
 ## What does it look like?
 
+    # mycloud.rb
+    require 'lib/hugo'
+
+    config = YAML.load_file("mycloud.yml")
+    
     Hugo do
       cloud "mycloud" do
         balancer
@@ -49,3 +54,30 @@ Make sure you have a keypair generated for you AWS Account!
         
         print
       end
+
+---
+
+## What about the config file?
+
+    # mycloud.yml
+    
+    github:
+      url: XXXX
+      publickey: XXX
+      privatekey: XXX
+
+    package_list:
+      - name: mysql-client
+      - name: libmysqlclient15-dev    
+      - name: libmysql-ruby1.8
+      - name: libexpat1
+      - name: libxml2
+      - name: libxml2-dev
+      - name: libxslt1-dev
+      - name: sqlite3
+      - name: libsqlite3-dev
+
+    gem_list:
+      - name: bundler
+    
+    
