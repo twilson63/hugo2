@@ -42,7 +42,7 @@ class Hugo::Cloud
   
   def deploy
     if cloud_app
-      #cloud_app.setup
+      cloud_app.setup
       cloud_app.deploy
     end
     
