@@ -15,7 +15,7 @@ module Hugo
         # create instance
         
         @server = options[:server] || options["DBInstanceIdentifier"]
-        @db = options[:name] || options["DBName"]
+        @db = options[:name] #|| options["DBName"]
         @user = options[:user] || options["MasterUsername"]
         @password = options[:password] if options[:password]
         @size = options[:size] || options["AllocatedStorage"] || DEFAULT_SIZE
