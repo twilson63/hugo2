@@ -65,13 +65,16 @@ module Hugo
     
       def ssh(commands, dna=nil, key_pair_file=nil)
         raise ArgumentError.new("Key Pair File is required") if key_pair_file.nil?
-        Net::SSH.start(self.uri, "ubuntu", :keys => key_pair_file) do |ssh|
-          if dna
-            ssh.exec!("echo \"#{dna.to_json.gsub('"','\"')}\" > ~/dna.json")
+        begin
+          Net::SSH.start(self.uri, "ubuntu", :keys => key_pair_file) do |ssh|
+            if dna
+              ssh.exec!("echo \"#{dna.to_json.gsub('"','\"')}\" > ~/dna.json")
+            end
+            commands.each do |cmd|
+              puts ssh.exec!(cmd)
+            end
           end
-          commands.each do |cmd|
-            puts ssh.exec!(cmd)
-          end
+        rescue
         end
       end
     
