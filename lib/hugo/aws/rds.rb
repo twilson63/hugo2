@@ -91,6 +91,7 @@ module Hugo
 
       def self.find_or_create(options)
         rds = self.find(options[:server]) || self.new(options).create
+        rds.db = options[:name]
         rds.password = options[:password]
         rds
       end
