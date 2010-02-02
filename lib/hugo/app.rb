@@ -164,7 +164,6 @@ private
     commands << "cd hugo-repos && git pull"
     commands << 'sudo chef-solo -c /home/ubuntu/hugo-repos/config/solo.rb -j /home/ubuntu/dna.json'
         
-    database_info = {}
     database_info = { 
       :uri => db.uri, 
       :name => db.db,
@@ -176,10 +175,11 @@ private
       :git => cookbook,
       :access_key => Hugo::Aws::Ec2::ACCESS_KEY,
       :secret_key => Hugo::Aws::Ec2::SECRET_KEY,
+      :database => database_info, 
       
       :application => name, 
       :customer => cloud_name,
-      :database => database_info, 
+      
       :app => deploy_info
     )
   
