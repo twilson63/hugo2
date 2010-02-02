@@ -20,6 +20,27 @@ describe "Hugo App" do
       Hugo &block
     end.should_not raise_error
   end
+  
+  it "should save dna" do
+    block = lambda do
+      cloud "my_cloud" do 
+        balancer
+        app "testapp" do 
+          add_recipe "s3fs", :s3 => {:bucket => "samIam"}
+          servers 0
+          puts run_list
+          puts dna.inspect
+        end
+      end
+    end
+    
+    lambda do
+      Hugo &block
+    end.should_not raise_error
+    
+    #puts @app.dna
+  end
+  
 
   it "should raise error for database block not wrapped in cloud block" do
     block = lambda do

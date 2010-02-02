@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + "/../lib/hugo")
-
-Bundler.require_env(:test)    # get rspec and webrat in here
+# 
+# Bundler.require_env(:test)    # get rspec and webrat in here
 
 
 # require 'rubygems'

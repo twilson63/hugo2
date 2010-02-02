@@ -4,7 +4,8 @@ class Hugo::App
   include Singleton
   include Hugo::Mixin::ParamsValidate
 
-
+  attr_accessor :dna
+  
   def servers(instances=1)
     if lb
       if instances > lb.instances.length
@@ -34,6 +35,16 @@ class Hugo::App
   end
   
   
+  def add_recipe(name, options=nil)
+    run_list [] if run_list.nil?
+    run_list << "recipe[#{name}]"
+    if options
+      empty_hash = {}
+      self.dna = {} if self.dna.nil?
+      self.dna.merge!(options)
+    end
+  end
+    
   def name(arg=nil)
     set_or_return(:name, arg, :kind_of => [String]) 
   end
@@ -62,14 +73,6 @@ class Hugo::App
     set_or_return(:image_id, arg, :kind_of => [String]) 
   end
 
-  def port(arg=nil)
-    set_or_return(:port, arg, :kind_of => [String]) 
-  end
-
-  def ssl(arg=nil)
-    set_or_return(:ssl, arg, :kind_of => [String]) 
-  end
-
   def application(arg=nil)
     set_or_return(:application, arg, :kind_of => [String]) 
   end
@@ -93,31 +96,7 @@ class Hugo::App
   def key_path(arg=nil)
     set_or_return(:key_pair_file, arg, :kind_of => [String])    
   end
-
-  def port(arg=nil)
-    set_or_return(:port, arg, :kind_of => [String])    
-  end
-  
-  def github_url(arg=nil)
-    set_or_return(:github_url, arg, :kind_of => [String])        
-  end
-  
-  def privatekey(arg=nil)
-    set_or_return(:privatekey, arg, :kind_of => [String])            
-  end
-
-  def publickey(arg=nil)
-    set_or_return(:publickey, arg, :kind_of => [String])            
-  end
-
-  def gem_list(arg=nil)
-    set_or_return(:gem_list, arg, :kind_of => [Array])            
-  end
-
-  def package_list(arg=nil)
-    set_or_return(:package_list, arg, :kind_of => [Array])            
-  end
-  
+    
   def run_list(arg=nil)
     set_or_return(:run_list, arg, :kind_of => [Array])                
   end
@@ -184,34 +163,25 @@ private
     commands = []
     commands << "cd hugo-repos && git pull"
     commands << 'sudo chef-solo -c /home/ubuntu/hugo-repos/config/solo.rb -j /home/ubuntu/dna.json'
-    
-    ports = [port]
-    ports << ssl unless ssl.nil?
-      
+        
     database_info = {}
     database_info = { 
       :uri => db.uri, 
       :name => db.db,
       :user => db.user, 
       :password => db.password } unless db.nil?
+    
+    self.dna = {} if self.dna.nil?
+    self.dna.merge!(:run_list => run_list,
+      :git => cookbook,
+      :access_key => Hugo::Aws::Ec2::ACCESS_KEY,
+      :secret_key => Hugo::Aws::Ec2::SECRET_KEY,
       
-    dna = { :run_list => run_list,
-      :package_list => package_list,
-      :gem_list => gem_list,
-
       :application => name, 
       :customer => cloud_name,
       :database => database_info, 
-      :web => { :port => port, :ssl => ssl }, 
-      :git => cookbook,
-      :github => {  :url => github_url, 
-                    :publickey => publickey, 
-                    :privatekey => privatekey},
-      :access_key => Hugo::Aws::Ec2::ACCESS_KEY,
-      :secret_key => Hugo::Aws::Ec2::SECRET_KEY,
-      :apache => { :listen_ports =>  ports },
       :app => deploy_info
-    }
+    )
   
     lb.instances.each do |i|
       Hugo::Aws::Ec2.find(i).ssh(commands, dna, File.join(key_path, key_name))
