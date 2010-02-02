@@ -90,7 +90,7 @@ class Hugo::App
     set_or_return(:cookbook, arg, :kind_of => [String])
   end
   
-  def key_pair_file(arg=nil)
+  def key_path(arg=nil)
     set_or_return(:key_pair_file, arg, :kind_of => [String])    
   end
 
@@ -176,7 +176,7 @@ private
     commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo gem install chef-deploy --no-ri --no-rdoc; fi'
     commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo gem install git --no-ri --no-rdoc; fi'
     commands << "if [ -d \"./hugo-repos\" ]; then echo \"setup already run\"; else git clone #{self.cookbook} ~/hugo-repos; fi"
-    Hugo::Aws::Ec2.find(instance_id).ssh(commands, nil, key_pair_file)
+    Hugo::Aws::Ec2.find(instance_id).ssh(commands, nil, File.join(key_path, key_name))
   end
   
   def deploy_ec2
@@ -214,7 +214,7 @@ private
     }
   
     lb.instances.each do |i|
-      Hugo::Aws::Ec2.find(i).ssh(commands, dna, key_pair_file)
+      Hugo::Aws::Ec2.find(i).ssh(commands, dna, File.join(key_path, key_name))
     end
   end
   

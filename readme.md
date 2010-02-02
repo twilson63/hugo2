@@ -3,6 +3,10 @@
 
 Currently only supports Amazon Web Services, but will be expanded soon!
 
+## Install
+
+  gem install hugo
+
 ## Requirements
 
 First, you need a Amazon AWS Account
