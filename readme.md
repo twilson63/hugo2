@@ -19,7 +19,7 @@ Make sure you have a keypair generated for you AWS Account!
 ## What does it look like?
 
     # mycloud.rb
-    require 'lib/hugo'
+    require 'hugo'
 
     config = YAML.load_file("mycloud.yml")
     
