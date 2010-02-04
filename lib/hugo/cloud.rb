@@ -86,6 +86,19 @@ Zone: #{ec2.zone}
 
 REPORT
       end
+    else
+      ec2 = Hugo::Aws::Ec2.find(cloud_app.instance)
+      puts <<REPORT
+
+Since you are not running a balancer
+you need to remember to add #{ec2.name} as the instance method in your app
+-----------------------      
+Id: #{ec2.name}
+Uri: #{ec2.uri}
+Type: #{ec2.type}
+Zone: #{ec2.zone}
+      
+REPORT
     end
 
   end

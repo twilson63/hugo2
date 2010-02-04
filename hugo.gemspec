@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{hugo}
-  s.version = "0.1.9"
+  s.version = "0.1.10"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tom Wilson", "Barrett Little"]
-  s.date = %q{2010-02-02}
+  s.date = %q{2010-02-04}
   s.description = %q{A easy to understand DSL that makes it dirt simple to deploy to the cloud.}
   s.email = %q{tom@jackhq.com}
   s.files = [
@@ -49,24 +49,24 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<amazon-ec2>, [">= 0"])
       s.add_runtime_dependency(%q<net-ssh>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
-      s.add_runtime_dependency(%q<amazon-ec2>, ["= 0.7.5"])
-      s.add_runtime_dependency(%q<json>, ["= 1.2.0"])
-      s.add_runtime_dependency(%q<net-ssh>, ["= 2.0.16"])
+      s.add_runtime_dependency(%q<amazon-ec2>, [">= 0.7.5"])
+      s.add_runtime_dependency(%q<json>, [">= 1.2.0"])
+      s.add_runtime_dependency(%q<net-ssh>, [">= 2.0.16"])
     else
       s.add_dependency(%q<amazon-ec2>, [">= 0"])
       s.add_dependency(%q<net-ssh>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
-      s.add_dependency(%q<amazon-ec2>, ["= 0.7.5"])
-      s.add_dependency(%q<json>, ["= 1.2.0"])
-      s.add_dependency(%q<net-ssh>, ["= 2.0.16"])
+      s.add_dependency(%q<amazon-ec2>, [">= 0.7.5"])
+      s.add_dependency(%q<json>, [">= 1.2.0"])
+      s.add_dependency(%q<net-ssh>, [">= 2.0.16"])
     end
   else
     s.add_dependency(%q<amazon-ec2>, [">= 0"])
     s.add_dependency(%q<net-ssh>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
-    s.add_dependency(%q<amazon-ec2>, ["= 0.7.5"])
-    s.add_dependency(%q<json>, ["= 1.2.0"])
-    s.add_dependency(%q<net-ssh>, ["= 2.0.16"])
+    s.add_dependency(%q<amazon-ec2>, [">= 0.7.5"])
+    s.add_dependency(%q<json>, [">= 1.2.0"])
+    s.add_dependency(%q<net-ssh>, [">= 2.0.16"])
   end
 end
 

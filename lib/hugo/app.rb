@@ -13,12 +13,19 @@ class Hugo::App
       elsif instances < lb.instances.length
         delete_ec2(lb.instances.length - instances)
       end    
+    else
+      instance(build_ec2(1)) unless instance
     end
   end
   
   def setup
-    lb.instances.each do |i|
-      setup_ec2(i)
+    if lb
+      lb.instances.each do |i|
+        setup_ec2(i)
+      end
+    else
+      puts instance
+      setup_ec2(instance)
     end
     puts "Setup Completed"
   end
@@ -43,6 +50,10 @@ class Hugo::App
       self.dna = {} if self.dna.nil?
       self.dna.merge!(options)
     end
+  end
+
+  def instance(arg=nil)
+    set_or_return(:instance, arg, :kind_of => [String]) 
   end
     
   def name(arg=nil)
@@ -112,11 +123,13 @@ class Hugo::App
 private
 
   def build_ec2(i=1)
+    instance_id = nil
     i.times do
       instance_id = create_ec2
       #setup_ec2(instance_id)
-      lb.add(instance_id)
+      lb.add(instance_id) if lb
     end
+    instance_id
   end
   
   def create_ec2
@@ -155,13 +168,15 @@ private
     commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo gem install chef-deploy --no-ri --no-rdoc; fi'
     commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo gem install git --no-ri --no-rdoc; fi'
     commands << "if [ -d \"./hugo-repos\" ]; then echo \"setup already run\"; else git clone #{self.cookbook} ~/hugo-repos; fi"
-    Hugo::Aws::Ec2.find(instance_id).ssh(commands, nil, File.join(key_path, key_name))
+    ec2 = Hugo::Aws::Ec2.find(instance_id)
+    puts ec2.uri
+    ec2.ssh(commands, nil, File.join(key_path, key_name))
   end
   
   def deploy_ec2
   
     commands = []
-    commands << "cd hugo-repos && git pull"
+    commands << "cd hugo-repos && git reset --hard && git pull"
     commands << 'sudo chef-solo -c /home/ubuntu/hugo-repos/config/solo.rb -j /home/ubuntu/dna.json'
         
     database_info = { 
@@ -183,9 +198,14 @@ private
       :app => deploy_info
     )
   
-    lb.instances.each do |i|
-      Hugo::Aws::Ec2.find(i).ssh(commands, dna, File.join(key_path, key_name))
+    if lb
+      lb.instances.each do |i|
+        Hugo::Aws::Ec2.find(i).ssh(commands, dna, File.join(key_path, key_name))
+      end
+    else
+      Hugo::Aws::Ec2.find(instance).ssh(commands, dna, File.join(key_path, key_name))      
     end
+    
   end
   
   def delete_ec2(i=1)
@@ -196,5 +216,10 @@ private
 
     end  
   end
+  
+  def get_instance(uri)
+    nil
+  end
+  
 
 end
