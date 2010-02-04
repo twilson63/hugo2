@@ -1,4 +1,4 @@
-# Hugo (Cloud DSL) 0.1.9
+# Hugo (Cloud DSL) 0.1.10
 <small>A simple dsl to deploy to the cloud</small>
 
 
@@ -59,7 +59,13 @@ Make sure you have a keypair generated for you AWS Account!
               :migrate => true,
               :migration_command => 'rake db:migrate'
               
-            }
+            },
+            :ssl => {
+              :private => config['app']['ssl']['private']
+              :public => config['app']['ssl']['public']
+              :gd_bundle => config['app']['ssl']['public']
+            },
+            :web => { :port => '8080' }
           }
           
           servers 2
