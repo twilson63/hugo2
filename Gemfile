@@ -1,7 +1,9 @@
+source :gemcutter
+
 gem 'amazon-ec2'
 gem 'net-ssh'
 gem 'json'
 
-only :test do
+group :test do
   gem 'rspec'
 end

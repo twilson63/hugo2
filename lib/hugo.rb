@@ -1,8 +1,12 @@
-# This makes sure the bundled gems are in our $LOAD_PATH
-#require File.expand_path(File.join(File.dirname(__FILE__) + "/..", 'vendor', 'gems', 'environment'))
-
-# This actually requires the bundled gems
-#Bundler.require_env
+begin
+  # Require the preresolved locked set of gems.
+  require File.expand_path('../.bundle/environment', __FILE__)
+rescue LoadError
+  # Fallback on doing the resolve at runtime.
+  require "rubygems"
+  require "bundler"
+  Bundler.setup
+end
 
 require 'AWS'
 require 'net/ssh'
