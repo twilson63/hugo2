@@ -122,7 +122,7 @@ describe Hugo::Database do
     db.user "admin"
     db.password "test"
     db.deploy
-    db.info.inspect.should == '{:user=>"user", :uri=>"test.cwrzj6lxowfj.us-east-1.rds.amazonaws.com", :password=>"test", :name=>"mydb"}'
+    db.info.inspect.should == '{:password=>"test", :user=>"user", :name=>"mydb", :uri=>"test.cwrzj6lxowfj.us-east-1.rds.amazonaws.com"}'
   end
   
   
