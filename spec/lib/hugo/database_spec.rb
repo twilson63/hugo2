@@ -108,6 +108,12 @@ describe Hugo::Database do
     
   end
   
+  it "should print help for database" do
+    db = Hugo::Database.instance
+    db.name "myserver"
+    db.help.should =~ /^Welcome to Hugo/
+    
+  end
   
   
 end

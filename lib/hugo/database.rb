@@ -43,6 +43,29 @@ class Hugo::Database
     @server = nil
   end
   
+  def help
+    
+    x = <<HELP
+Welcome to Hugo::Database
+-------------------------
+
+Required Methods:
+-------------------------
+name - Name of Database
+server - Name of Server
+user - A Valid User of RDS Server
+password - A Valid Password of RDS Server    
+
+Optional Methods:
+-------------------------
+size - Storage Size of you db server
+zone - Zone of the AWS:RDS
+
+HELP
+    puts x
+    x
+  end
+  
   
   def name(arg=nil)
     set_or_return(:name, arg, :kind_of => [String])     

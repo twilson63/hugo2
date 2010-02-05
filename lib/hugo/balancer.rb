@@ -28,6 +28,38 @@ class Hugo::Balancer
     )
   end
   
+  def help
+    x = <<HELP
+
+Hugo balancer 
+-----------------
+
+optional attributes
+-----------------
+zone - zone
+port - app server port 
+web - balancer port
+ssl_port - ssl app server port
+ssl_web - ssl balancer port
+type - port type
+
+
+defaults
+-----------------
+DEFAULT_ZONE = 'us-east-1c'
+DEFAULT_PORT = '8080'
+DEFAULT_WEB = '80'
+DEFAULT_TYPE = 'http'
+DEFAULT_SSL_PORT = '8443'
+DEFAULT_SSL_WEB = '443'
+
+
+
+HELP
+    puts x
+    x
+  end
+  
   def name(arg=nil)
     set_or_return(:name, arg, :kind_of => [String])     
   end

@@ -16,6 +16,7 @@ describe "Hugo Balancer" do
       Hugo &block
     end.should_not raise_error
   end
+  
 
   it "should raise error for balancer block not wrapped in cloud block" do
     block = lambda do
@@ -31,6 +32,13 @@ describe "Hugo Balancer" do
     lb = Hugo::Balancer.instance
     lb.name "myserver"
     lb.deploy.should be_a_kind_of(Hugo::Aws::Elb)
+    
+  end
+
+  it "should print help for balancer" do
+    lb = Hugo::Balancer.instance
+    lb.name "myserver"
+    lb.help.should =~ /^Hugo balancer/
     
   end
 
