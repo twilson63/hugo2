@@ -178,4 +178,15 @@ run_list - the roles and recipes that you want chef-solo to run.
 add_recipe - the name of the recipe and a hash of options and settings.
 
 
+### Working with the source
 
+When you pull the source you need to run the following:
+
+    gem install bundler
+    bundle install
+    
+    # Run Tests
+    
+    spec ./spec
+    
+    
