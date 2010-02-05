@@ -9,6 +9,7 @@ class Hugo::Database
   DEFAULT_SIZE = 5
   DEFAULT_ZONE = 'us-east-1c'
   
+  attr_accessor :rds
 
   # initialize defaults
   def initialize
@@ -26,7 +27,7 @@ class Hugo::Database
     raise ArgumentError, "database.password Required" unless password
     
     
-    Hugo::Aws::Rds.find_or_create( :name => name,
+    @rds = Hugo::Aws::Rds.find_or_create( :name => name,
                               :server => server,
                               :user => user,
                               :password => password,
@@ -34,6 +35,7 @@ class Hugo::Database
                               :zone => zone,
                               :db_security_group => db_security_group
                                )
+    self
   end
   
   # clear attributes of database object
@@ -64,6 +66,16 @@ zone - Zone of the AWS:RDS
 HELP
     puts x
     x
+  end
+  
+  def info
+    { 
+      :uri => @rds.uri, 
+      :name => @rds.db,
+      :user => @rds.user, 
+      :password => @rds.password 
+      } 
+    
   end
   
   

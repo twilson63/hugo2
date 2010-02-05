@@ -108,7 +108,7 @@ module Hugo
         rescue
           @security_groups = @rds.create_db_security_group(:db_security_group_name => name, :db_security_group_description => description)
         end
-        puts @security_groups
+        #puts @security_groups
         @security_groups
       end
 

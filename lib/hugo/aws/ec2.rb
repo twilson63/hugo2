@@ -21,16 +21,19 @@ module Hugo
       
         if options["placement"] and options["placement"]["availabilityZone"]
           @zone = options["placement"]["availabilityZone"] 
+        elsif options[:zone]
+          @zone = option[:zone]
         else
           @zone = ZONE
         end
       
         @uri = options["dnsName"] || ""
-        @type = options["instanceType"] || TYPE
-        @image_id = options["imageId"] || AMI
+        @type = options[:type] || options["instanceType"]
+        @image_id = options[:image_id] || options["imageId"]
+        @key_name = options[:key_name] || options["keyName"]
+
         @create_time = options["launchTime"] || nil
       
-        @key_name = options[:key_name] || options["keyName"] || KEY_NAME
         if options["instanceState"] and options["instanceState"]["name"]
           @status = options["instanceState"]["name"]
         else

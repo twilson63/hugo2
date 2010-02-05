@@ -33,7 +33,7 @@ class Hugo::Cloud
     app_info.name name
     app_info.lb lb
     app_info.db db
-    app_info.cloud_name name
+    #app_info.cloud_name name
     app_info.instance_eval(&block) if block_given? 
     cloud_app app_info
     
@@ -48,9 +48,10 @@ class Hugo::Cloud
   end
   
   def delete
-    [db, cloud_app, lb].each do |s|
+    [cloud_app, lb].each do |s|
       s.destroy if s
     end
+    db.rds.destroy
   end
   
   
@@ -107,7 +108,7 @@ REPORT
   end
   
   def db(arg=nil)
-    set_or_return(:db, arg, :kind_of => [Hugo::Aws::Rds])
+    set_or_return(:db, arg, :kind_of => [Hugo::Database])
   end
   
   def lb(arg=nil)

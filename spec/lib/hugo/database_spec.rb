@@ -92,7 +92,7 @@ describe Hugo::Database do
     db.name "mydb"
     db.user "admin"
     db.password "test"
-    db.deploy.should be_a_kind_of(Hugo::Aws::Rds)
+    db.deploy.should be_a_kind_of(Hugo::Database)
   end
   
   it "should clear required attributes" do
@@ -114,6 +114,17 @@ describe Hugo::Database do
     db.help.should =~ /^Welcome to Hugo/
     
   end
+  
+  it "should return an info hash" do
+    db = Hugo::Database.instance
+    db.server "myserver"
+    db.name "mydb"
+    db.user "admin"
+    db.password "test"
+    db.deploy
+    db.info.inspect.should == '{:user=>"user", :uri=>"test.cwrzj6lxowfj.us-east-1.rds.amazonaws.com", :password=>"test", :name=>"mydb"}'
+  end
+  
   
   
 end

@@ -10,12 +10,19 @@ describe "Hugo App" do
     block = lambda do
       cloud "my_cloud" do 
         database "my_db" do
+          server "my_server"
           user "hello"
           password "world"
         end
         
         balancer
+        
         app "testapp" do 
+          clear
+          
+          key_name "ec2-keypair"
+          key_path "~/.ec2"
+          cookbook "git@github.com:jackhq/hugo-cookbooks.git"
           
           servers 0
         end
@@ -29,6 +36,55 @@ describe "Hugo App" do
     end.should_not raise_error
   end
   
+  it "should raise error requiring key_name" do
+    lambda do
+      Hugo do
+        cloud "my_cloud" do
+          app "testapp" do 
+            clear
+            key_path "~/.ec2"
+            cookbook "my_cookbook"
+            run_list ["role[base_rack_apache]"]
+          end 
+          deploy         
+        end        
+      end
+    end.should raise_error('app.key_name Required')
+  end
+
+  it "should raise error requiring key_path" do
+    lambda do
+      Hugo do
+        cloud "my_cloud" do
+          app "testapp" do 
+            clear
+            key_name "ec2-keypair"
+            cookbook "my_cookbook"
+            run_list ["role[base_rack_apache]"]
+          end 
+          deploy         
+        end        
+      end
+    end.should raise_error('app.key_path Required')
+  end
+
+  it "should raise error requiring cookbook" do
+    lambda do
+      Hugo do
+        cloud "my_cloud" do
+          app "testapp" do 
+            clear
+            key_name "ec2-keypair"
+            key_path "~/.ec2"
+            run_list ["role[base_rack_apache]"]
+          end 
+          deploy         
+        end        
+      end
+    end.should raise_error('app.cookbook Required')
+  end
+  
+  
   it "should save dna" do
     block = lambda do
       cloud "my_cloud" do 
@@ -36,8 +92,8 @@ describe "Hugo App" do
         app "testapp" do 
           add_recipe "s3fs", :s3 => {:bucket => "samIam"}
           servers 0
-          puts run_list
-          puts dna.inspect
+          #puts run_list
+          #puts dna.inspect
         end
       end
     end
