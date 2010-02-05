@@ -23,6 +23,31 @@ describe "Hugo DSL" do
     end.should be_true
   end
   
+  it "should deploy a single server app" do
+    block = lambda do
+      cloud "my_cloud" do                         
+        database "db_name" do 
+          server     "db_server"
+          user       "admin"
+          password   "mypassword"  
+        end
+        
+        balancer 
+        
+        app "app_name" do
+          
+                            
+        end
+      end
+    end
+    
+    lambda do
+      Hugo &block
+    end.should be_true
+ 
+  end
+  
+  
   
   
   it "should deploy infrastructure" do

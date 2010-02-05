@@ -9,10 +9,18 @@ describe "Hugo App" do
     
     block = lambda do
       cloud "my_cloud" do 
+        database "my_db" do
+          user "hello"
+          password "world"
+        end
+        
         balancer
         app "testapp" do 
+          
           servers 0
         end
+        #deploy
+        #print
       end
     end
     

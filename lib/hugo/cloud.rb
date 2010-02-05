@@ -9,7 +9,7 @@ class Hugo::Cloud
 
   end
 
-  def database(db_name, &block)
+  def database(db_name, &block)    
     database = Hugo::Database.instance
     
     database.db_security_group name
@@ -18,8 +18,7 @@ class Hugo::Cloud
     
     database.instance_eval(&block) if block_given? 
     db database.deploy 
-    
-    
+  
   end
   
   def balancer(&block)

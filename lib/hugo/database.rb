@@ -1,5 +1,6 @@
 module Hugo; end
 
+# Lauch Database Servers 
 class Hugo::Database
   include Singleton
   include Hugo::Mixin::ParamsValidate
@@ -9,14 +10,22 @@ class Hugo::Database
   DEFAULT_ZONE = 'us-east-1c'
   
 
+  # initialize defaults
   def initialize
     size DEFAULT_SIZE
     zone DEFAULT_ZONE
     server DEFAULT_SERVER
     db_security_group "default"
   end
-  
+
+  # deploy using AWS RDS
   def deploy
+    raise ArgumentError, "database.name Required" unless name
+    raise ArgumentError, "database.server Required" unless server
+    raise ArgumentError, "database.user Required" unless user
+    raise ArgumentError, "database.password Required" unless password
+    
+    
     Hugo::Aws::Rds.find_or_create( :name => name,
                               :server => server,
                               :user => user,
@@ -26,6 +35,14 @@ class Hugo::Database
                               :db_security_group => db_security_group
                                )
   end
+  
+  # clear attributes of database object
+  def clear
+    @user = nil
+    @password = nil
+    @server = nil
+  end
+  
   
   def name(arg=nil)
     set_or_return(:name, arg, :kind_of => [String])     
