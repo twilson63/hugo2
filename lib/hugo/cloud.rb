@@ -39,6 +39,13 @@ class Hugo::Cloud
     
   end
   
+  def dns(hostname, &block)
+    dns_info = Hugo::Dns.instance
+    dns_info.hostname hostname
+    dns_info.instance_eval(&block) if block_given? 
+    dns_info.deploy
+  end
+  
   def deploy
     if cloud_app
       cloud_app.setup
