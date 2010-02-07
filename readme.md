@@ -187,6 +187,13 @@ When you pull the source you need to run the following:
     
     # Run Tests
     
-    spec ./spec
+    rake spec
+    
+### Support
+
+Post an issue at http://support.jackrussellsoftware.com
+
+
+    
     
     
