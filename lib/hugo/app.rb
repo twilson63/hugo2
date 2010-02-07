@@ -223,17 +223,17 @@ private
   def setup_ec2(instance_id)
     
     commands = []
-    commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo apt-get update -y; fi'
-    commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo apt-get install ruby ruby1.8-dev libopenssl-ruby1.8 rdoc ri irb build-essential git-core xfsprogs -y; fi'
-    commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else wget http://rubyforge.org/frs/download.php/60718/rubygems-1.3.5.tgz && tar zxf rubygems-1.3.5.tgz; fi'
-    commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else cd rubygems-1.3.5 && sudo ruby setup.rb && sudo ln -sfv /usr/bin/gem1.8 /usr/bin/gem; fi'
-    commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo gem update --system; fi'
-    commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo gem install gemcutter --no-ri --no-rdoc; fi'
-    commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo gem install chef ohai --no-ri --no-rdoc; fi'
-    commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo gem source -a http://gems.github.com; fi'
-    commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo gem install chef-deploy --no-ri --no-rdoc; fi'
-    commands << 'if [ -d "./hugo-repos" ]; then echo "setup already run"; else sudo gem install git --no-ri --no-rdoc; fi'
-    commands << "if [ -d \"./hugo-repos\" ]; then echo \"setup already run\"; else git clone #{self.cookbook} ~/hugo-repos; fi"
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo apt-get update -y; fi'
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo apt-get install ruby ruby1.8-dev libopenssl-ruby1.8 rdoc ri irb build-essential git-core xfsprogs -y; fi'
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else wget http://rubyforge.org/frs/download.php/60718/rubygems-1.3.5.tgz && tar zxf rubygems-1.3.5.tgz; fi'
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else cd rubygems-1.3.5 && sudo ruby setup.rb && sudo ln -sfv /usr/bin/gem1.8 /usr/bin/gem; fi'
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo gem update --system; fi'
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo gem install gemcutter --no-ri --no-rdoc; fi'
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo gem install chef ohai --no-ri --no-rdoc; fi'
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo gem source -a http://gems.github.com; fi'
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo gem install chef-deploy --no-ri --no-rdoc; fi'
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo gem install git --no-ri --no-rdoc; fi'
+    commands << "if [ -d \"./hugo-repos\" ]; then echo \".\"; else git clone #{self.cookbook} ~/hugo-repos; fi"
     ec2 = Hugo::Aws::Ec2.find(instance_id)
     #puts ec2.uri
     ec2.ssh(commands, nil, File.join(key_path, key_name))

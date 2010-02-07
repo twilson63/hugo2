@@ -8,9 +8,6 @@
 #   Bundler.setup
 # end
 
-require 'active_support'
-require 'active_resource'
-require 'zerigo_dns'  
 require 'AWS'
 require 'net/ssh'
 require 'json'
@@ -20,7 +17,6 @@ require File.dirname(__FILE__) + '/hugo/cloud'
 require File.dirname(__FILE__) + '/hugo/balancer'
 require File.dirname(__FILE__) + '/hugo/database'
 require File.dirname(__FILE__) + '/hugo/app'
-require File.dirname(__FILE__) + '/hugo/dns'
 require File.dirname(__FILE__) + '/hugo/aws/rds'
 require File.dirname(__FILE__) + '/hugo/aws/elb'
 require File.dirname(__FILE__) + '/hugo/aws/ec2'
