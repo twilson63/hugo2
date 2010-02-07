@@ -7,22 +7,13 @@ class Hugo::Dns
   attr_accessor :host
 
   def deploy
-
     # Initialize Resouce
     Zerigo::DNS::Base.user = user
     Zerigo::DNS::Base.password = token
-
     # find or create domain
     zone = Zerigo::DNS::Zone.find_or_create(domain)
-
     # find or create host
-    host = Zerigo::DNS::Host.update_or_create(
-          :zone     => zone.id, 
-          :host     => hostname, 
-          :type     => type,
-          :ttl      => ttl,
-          :data     => data  
-      )
+    host = Zerigo::DNS::Host.update_or_create(zone.id, hostname, type, ttl, data)
   end
   
   def user(arg=nil)
