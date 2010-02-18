@@ -22,7 +22,7 @@ module Hugo
         if options["placement"] and options["placement"]["availabilityZone"]
           @zone = options["placement"]["availabilityZone"] 
         elsif options[:zone]
-          @zone = option[:zone]
+          @zone = options[:zone]
         else
           @zone = ZONE
         end
