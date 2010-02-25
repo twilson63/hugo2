@@ -75,7 +75,7 @@ module Hugo
               ssh.exec!("echo \"#{dna.to_json.gsub('"','\"')}\" > ~/dna.json")
             end
             commands.each do |cmd|
-              puts ssh.exec!(cmd)
+              print ssh.exec!(cmd)
             end
           end
         rescue
