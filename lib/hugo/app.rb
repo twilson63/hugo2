@@ -203,7 +203,7 @@ private
                     :zone => zone || ZONE, 
                     :image_id => image_id || AMI,
                     :key_name => key_name,
-                    :security_group => "default").create
+                    :security_group => security_group || "default").create
   
     new_ec2 = nil
     sleep 10

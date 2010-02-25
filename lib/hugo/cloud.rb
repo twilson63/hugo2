@@ -60,10 +60,10 @@ class Hugo::Cloud
     if db
       puts <<REPORT
 ------------------------    
-DATABASE: #{db.db}
-  User: #{db.user}
-  Password: #{db.password}
-  Uri: #{db.uri}
+DATABASE: #{db.info[:name]}
+  User: #{db.info[:user]}
+  Password: #{db.info[:password]}
+  Uri: #{db.info[:uri]}
 REPORT
     end
     

@@ -40,10 +40,10 @@ module Hugo
           @status = "unknown"
         end
 
-        # @security_group = options[:security_group] || nil
-        # if options["groupSet"] and options["groupSet"]["item"] and options["groupSet"]["item"][0]
-        #   @security_group = options["groupSet"]["item"][0]["groupId"]
-        # end
+        @security_group = options[:security_group] || "default"
+        if options["groupSet"] and options["groupSet"]["item"] and options["groupSet"]["item"][0]
+          @security_group = options["groupSet"]["item"][0]["groupId"]
+        end
         
       end
       
@@ -52,7 +52,8 @@ module Hugo
         @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
         result = @ec2.run_instances(:image_id => self.image_id, :key_name => self.key_name, 
           :max_count => 1,
-          :availability_zone => self.zone) unless self.create_time
+          :availability_zone => self.zone,
+          :security_group => self.security_group) unless self.create_time
         set_attributes(result.instancesSet.item[0]) if result.instancesSet.item[0]
         self
       end
@@ -81,20 +82,20 @@ module Hugo
         end
       end
     
-      def self.find_or_create_security_group(name, description)
-        @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
-        begin
-          @security_groups = @ec2.describe_security_groups(:group_name => name)
-        rescue
-          @security_groups = @ec2.create_security_group(:group_name => name, :group_description => description)
-        end
-        @security_groups
-      end
-
-      def self.destroy_security_group(name)
-        @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
-        @ec2.delete_security_group(:group_name => name)
-      end
+      # def self.find_or_create_security_group(name, description)
+      #   @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+      #   begin
+      #     @security_groups = @ec2.describe_security_groups(:group_name => name)
+      #   rescue
+      #     @security_groups = @ec2.create_security_group(:group_name => name, :group_description => description)
+      #   end
+      #   @security_groups
+      # end
+      # 
+      # def self.destroy_security_group(name)
+      #   @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+      #   @ec2.delete_security_group(:group_name => name)
+      # end
 
       def self.all
         @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)

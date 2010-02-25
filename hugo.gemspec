@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{hugo}
-  s.version = "0.3.1"
+  s.version = "0.3.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tom Wilson", "Barrett Little"]
-  s.date = %q{2010-02-07}
+  s.date = %q{2010-02-21}
   s.description = %q{Deploy your apps to the cloud.}
   s.email = %q{tom@jackhq.com}
   s.files = [
@@ -38,7 +38,6 @@ Gem::Specification.new do |s|
      "spec/lib/hugo/aws/rds_spec.rb",
      "spec/lib/hugo/balancer_spec.rb",
      "spec/lib/hugo/database_spec.rb",
-     "spec/lib/hugo/dns_spec.rb",
      "spec/lib/hugo_spec.rb",
      "spec/spec_helper.rb"
   ]
