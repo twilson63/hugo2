@@ -10,7 +10,7 @@ module Hugo
       ZONE = "us-east-1c"
       TYPE = "m1.small"
   
-      attr_accessor :name, :uri, :type, :zone, :image_id, :key_name, :create_time, :status, :security_group
+      attr_accessor :name, :uri, :type, :zone, :image_id, :key_name, :create_time, :status, :security_group, :aws_access_key_id, :aws_secret_access_key
 
       def initialize(options = {})
         set_attributes(options)
@@ -45,12 +45,16 @@ module Hugo
           @security_group = options["groupSet"]["item"][0]["groupId"]
         end
         
+        @aws_access_key_id = options[:aws_access_key_id] || ACCESS_KEY
+        @aws_secret_access_key = options[:aws_secret_access_key] || SECRET_KEY
+        
       end
       
     
       def create
-        @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
-        result = @ec2.run_instances(:image_id => self.image_id, :key_name => self.key_name, 
+        result = ec2.run_instances(
+          :image_id => self.image_id, 
+          :key_name => self.key_name, 
           :max_count => 1,
           :availability_zone => self.zone,
           :security_group => self.security_group) unless self.create_time
@@ -59,8 +63,7 @@ module Hugo
       end
     
       def destroy
-        @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
-        @ec2.terminate_instances(:instance_id => self.name)
+        ec2.terminate_instances(:instance_id => self.name)
       end
     
       def save
@@ -97,13 +100,13 @@ module Hugo
       #   @ec2.delete_security_group(:group_name => name)
       # end
 
-      def self.all
-        @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+      def self.all(access_key_id, secret_access_key)
+        @ec2 = AWS::EC2::Base.new(:access_key_id => access_key_id, :secret_access_key => secret_access_key)
         @ec2.describe_instances().reservationSet.item[0].instancesSet.item.map { |i| self.new(i) }
       end
     
-      def self.find(instance)
-        @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+      def self.find(instance, access_key_id, secret_access_key)
+        @ec2 = AWS::EC2::Base.new(:access_key_id => access_key_id, :secret_access_key => secret_access_key)
         self.new(@ec2.describe_instances(:instance_id => instance).reservationSet.item[0].instancesSet.item[0])
       end
 
@@ -119,6 +122,17 @@ module Hugo
           self.new(options).create
         end
       end
+      
+  private      
+      def ec2
+        AWS::EC2::Base.new(
+          :access_key_id => self.aws_access_key_id, 
+          :secret_access_key => self.aws_secret_access_key)
+        
+      end
+      
+      
+  
     end
   end
 end

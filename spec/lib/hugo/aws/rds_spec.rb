@@ -8,7 +8,8 @@ describe Hugo::Aws::Rds do
   end
     
   it "should create a new instance" do    
-    @hugo_rds = Hugo::Aws::Rds.new(:name => "myserver", :db => "mydb", :user => "user", :password => "password").should be_true
+    @hugo_rds = Hugo::Aws::Rds.new(:name => "myserver", :db => "mydb", :user => "user", :password => "password")
+    @hugo_rds.should_not be_nil
     @hugo_rds.save.should be_true
   end
   

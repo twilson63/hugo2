@@ -21,10 +21,15 @@ class Hugo::Balancer
   end
   
   def deploy
+    raise ArgumentError, "app.aws_access_key_id Required" unless aws_access_key_id
+    raise ArgumentError, "app.aws_secret_access_key Required" unless aws_secret_access_key
+    
     Hugo::Aws::Elb.find_or_create(:name => name,
                             :zones => zone,
                             :listeners => [{ :instance_port => port, :protocol =>"HTTP", :load_balancer_port => web}, 
-                              { :instance_port => ssl_port, :protocol =>"TCP", :load_balancer_port => ssl_web}]
+                              { :instance_port => ssl_port, :protocol =>"TCP", :load_balancer_port => ssl_web}],
+                              :aws_access_key_id => aws_access_key_id,
+                              :aws_secret_access_key => aws_secret_access_key
     )
   end
   
@@ -86,6 +91,16 @@ HELP
   
   def ssl_web(arg=nil)
     set_or_return(:ssl_web, arg, :kind_of => [String])     
+  end
+  
+  # Aws Access Key for EC2 Deployment
+  def aws_access_key_id(arg=nil)
+    set_or_return(:aws_access_key_id, arg, :kind_of => [String]) 
+  end
+
+  # Aws Access Secret Key for EC2 Deployment
+  def aws_secret_access_key(arg=nil)
+    set_or_return(:aws_secret_access_key, arg, :kind_of => [String]) 
   end
   
 end

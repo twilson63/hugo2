@@ -43,7 +43,9 @@ class Hugo::App
     raise ArgumentError, "app.key_path Required" unless key_path
     raise ArgumentError, "app.cookbook Required" unless cookbook
     raise ArgumentError, "app.run_list Required" unless run_list
-    
+    raise ArgumentError, "app.aws_access_key_id Required" unless aws_access_key_id
+    raise ArgumentError, "app.aws_secret_access_key Required" unless aws_secret_access_key
+
     deploy_ec2
     #puts "Deploy Completed"    
   end
@@ -52,10 +54,10 @@ class Hugo::App
   def destroy
     if lb
       lb.instances.each do |i|
-        Hugo::Aws::Ec2.find(i).destroy
+        ec2(i).destroy
       end    
     else
-      Hugo::Aws::Ec2.find(instance).destroy
+      ec2(instance).destroy
     end
     
   end
@@ -65,6 +67,8 @@ class Hugo::App
     @key_path = nil
     @cookbook = nil
     @run_list = nil
+    @aws_access_key_id = nil
+    @aws_secret_access_key = nil
   end
   
   
@@ -97,6 +101,16 @@ class Hugo::App
   # Database Object
   def db(arg=nil)
     set_or_return(:db, arg, :kind_of => [Hugo::Database]) 
+  end
+
+  # Aws Access Key for EC2 Deployment
+  def aws_access_key_id(arg=nil)
+    set_or_return(:aws_access_key_id, arg, :kind_of => [String]) 
+  end
+
+  # Aws Access Secret Key for EC2 Deployment
+  def aws_secret_access_key(arg=nil)
+    set_or_return(:aws_secret_access_key, arg, :kind_of => [String]) 
   end
   
   # URI of 
@@ -199,16 +213,18 @@ private
   end
   
   def create_ec2
-    ec2 = Hugo::Aws::Ec2.new(:type => type || TYPE, 
+    aws_ec2 = Hugo::Aws::Ec2.new(:type => type || TYPE, 
                     :zone => zone || ZONE, 
                     :image_id => image_id || AMI,
                     :key_name => key_name,
-                    :security_group => security_group || "default").create
+                    :security_group => security_group || "default",
+                    :aws_access_key_id => aws_access_key_id,
+                    :aws_secret_access_key => aws_secret_access_key).create
   
     new_ec2 = nil
     sleep 10
     loop do
-      new_ec2 = Hugo::Aws::Ec2.find(ec2.name)
+      new_ec2 = ec2(aws_ec2.name)
       puts new_ec2.status
       if new_ec2.status == "running"
         break
@@ -225,8 +241,8 @@ private
     commands = []
     commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo apt-get update -y; fi'
     commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo apt-get install ruby ruby1.8-dev libopenssl-ruby1.8 rdoc ri irb build-essential git-core xfsprogs -y; fi'
-    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else wget http://rubyforge.org/frs/download.php/60718/rubygems-1.3.5.tgz && tar zxf rubygems-1.3.5.tgz; fi'
-    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else cd rubygems-1.3.5 && sudo ruby setup.rb && sudo ln -sfv /usr/bin/gem1.8 /usr/bin/gem; fi'
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else wget http://rubyforge.org/frs/download.php/69365/rubygems-1.3.6.tgz && tar zxf rubygems-1.3.6.tgz; fi'
+    commands << 'if [ -d "./hugo-repos" ]; then echo "."; else cd rubygems-1.3.6 && sudo ruby setup.rb && sudo ln -sfv /usr/bin/gem1.8 /usr/bin/gem; fi'
     commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo gem update --system; fi'
     commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo gem install gemcutter --no-ri --no-rdoc; fi'
     commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo gem install chef -v 0.7.16 --no-ri --no-rdoc; fi'
@@ -235,9 +251,7 @@ private
     commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo gem install chef-deploy --no-ri --no-rdoc; fi'
     commands << 'if [ -d "./hugo-repos" ]; then echo "."; else sudo gem install git --no-ri --no-rdoc; fi'
     commands << "if [ -d \"./hugo-repos\" ]; then echo \".\"; else git clone #{self.cookbook} ~/hugo-repos; fi"
-    ec2 = Hugo::Aws::Ec2.find(instance_id)
-    #puts ec2.uri
-    ec2.ssh(commands, nil, File.join(key_path, key_name))
+    ec2(instance_id).ssh(commands, nil, File.join(key_path, key_name))
   end
   
   def deploy_ec2
@@ -251,17 +265,17 @@ private
     self.dna.merge!(
       :run_list => run_list,
       :git => cookbook,
-      :access_key => Hugo::Aws::Ec2::ACCESS_KEY,
-      :secret_key => Hugo::Aws::Ec2::SECRET_KEY,
+      :access_key => aws_access_key_id,
+      :secret_key => aws_secret_access_key,
       :database => db ? db.info : {} 
     )
           
     if lb
       lb.instances.each do |i|
-        Hugo::Aws::Ec2.find(i).ssh(commands, dna, File.join(key_path, key_name))
+        ec2(i).ssh(commands, dna, File.join(key_path, key_name))
       end
     else
-      Hugo::Aws::Ec2.find(instance).ssh(commands, dna, File.join(key_path, key_name))      
+      ec2(instance).ssh(commands, dna, File.join(key_path, key_name))      
     end
     
   end
@@ -269,11 +283,16 @@ private
   def delete_ec2(i=1)
     i.times do 
       instance_id = lb.instances[0]
-      Hugo::Aws::Ec2.find(instance_id).destroy
+      ec2(instance_id).destroy
       #lb.remove(instance_id)
 
     end  
   end
+  
+  def ec2(instance_id)
+    Hugo::Aws::Ec2.find(instance, aws_access_key_id, aws_secret_access_key)
+  end
+  
     
 
 end

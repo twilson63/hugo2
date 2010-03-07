@@ -5,6 +5,39 @@ describe "Hugo App" do
     mocks
   end
   
+  it "should allow aws key and secret key overrides" do
+    block = lambda do
+      cloud "my_cloud" do 
+        database "my_db" do
+          server "my_server"
+          user "hello"
+          password "world"
+        end
+        
+        balancer
+        
+        app "testapp" do 
+          clear
+          aws_access_key_id "12345"
+          aws_secret_access_key "123456"
+          key_name "ec2-keypair"
+          key_path "~/.ec2"
+          cookbook "git@github.com:jackhq/hugo-cookbooks.git"
+          
+          servers 0
+        end
+        #deploy
+        #print
+      end
+    end
+    
+    lambda do
+      Hugo &block
+    end.should_not raise_error
+    
+  end
+  
+  
   it "should be valid" do
     
     block = lambda do
@@ -83,6 +116,43 @@ describe "Hugo App" do
       end
     end.should raise_error('app.cookbook Required')
   end
+  
+  it "should raise error requiring aws_access_key_id" do
+    lambda do
+      Hugo do
+        cloud "my_cloud" do
+          app "testapp" do 
+            clear
+            aws_secret_access_key "123456789"
+            key_name "ec2-keypair"
+            key_path "~/.ec2"
+            cookbook "my_cookbook"
+            run_list ["role[base_rack_apache]"]
+          end 
+          deploy         
+        end        
+      end
+    end.should raise_error('app.aws_access_key_id Required')
+  end
+
+  it "should raise error requiring aws_secret_access_key" do
+    lambda do
+      Hugo do
+        cloud "my_cloud" do
+          app "testapp" do 
+            clear
+            aws_access_key_id "123456789"
+            key_name "ec2-keypair"
+            key_path "~/.ec2"
+            cookbook "my_cookbook"
+            run_list ["role[base_rack_apache]"]
+          end 
+          deploy         
+        end        
+      end
+    end.should raise_error('app.aws_secret_access_key Required')
+  end
+  
   
   
   it "should save dna" do
