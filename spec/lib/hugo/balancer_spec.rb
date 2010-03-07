@@ -8,7 +8,11 @@ describe "Hugo Balancer" do
   it "should be valid" do
     block = lambda do
       cloud "my_cloud" do 
-        balancer
+        balancer do
+          aws_access_key_id "12"
+          aws_secret_access_key "12"
+        end
+        
       end
     end
     
