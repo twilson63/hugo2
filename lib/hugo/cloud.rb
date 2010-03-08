@@ -88,7 +88,7 @@ Balancer: #{lb.name}
 REPORT
   
       lb.instances.each do |i|
-        ec2 = Hugo::Aws::Ec2.find(i)
+        ec2 = Hugo::Aws::Ec2.find(i, @aws_access_key_id, @aws_secret_access_key)
         puts <<REPORT
 -----------------------      
 Id: #{ec2.name}
@@ -99,7 +99,7 @@ Zone: #{ec2.zone}
 REPORT
       end
     else
-      ec2 = Hugo::Aws::Ec2.find(cloud_app.instance)
+      ec2 = Hugo::Aws::Ec2.find(cloud_app.instance, @aws_access_key_id, @aws_secret_access_key)
       puts <<REPORT
 
 Since you are not running a balancer

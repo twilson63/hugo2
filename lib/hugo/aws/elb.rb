@@ -99,7 +99,7 @@ module Hugo
       
     private
       def elb
-        AWS::ELB::Base.new(:access_key_id => @aws_access_key_id, :secret_access_key => @aws_secret_access_key)
+        AWS::ELB::Base.new(:access_key_id => self.aws_access_key_id, :secret_access_key => self.aws_secret_access_key)
       end
       
     end

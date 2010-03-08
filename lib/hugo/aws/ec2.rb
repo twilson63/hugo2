@@ -108,6 +108,7 @@ module Hugo
       end
     
       def self.find(instance, access_key_id, secret_access_key)
+        raise ArgumentError, "Instance Required" unless instance
         @ec2 = AWS::EC2::Base.new(:access_key_id => access_key_id, :secret_access_key => secret_access_key)
         self.new(@ec2.describe_instances(:instance_id => instance).reservationSet.item[0].instancesSet.item[0])
       end
@@ -119,7 +120,7 @@ module Hugo
     
       def self.find_or_create(options)
         if options[:name]
-          self.find(options[:name]) 
+          self.find(options[:name], options[:access_key_id], options[:secret_access_key]) 
         else
           self.new(options).create
         end

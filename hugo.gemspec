@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tom Wilson", "Barrett Little"]
-  s.date = %q{2010-03-07}
+  s.date = %q{2010-03-08}
   s.description = %q{Deploy your apps to the EC2 cloud.}
   s.email = %q{tom@jackhq.com}
   s.files = [
@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/twilson63/hugo2}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Deploy Your Rack Apps to EC2 Cloud}
   s.test_files = [
     "spec/lib/hugo/app_spec.rb",

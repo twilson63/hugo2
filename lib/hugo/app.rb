@@ -290,7 +290,7 @@ private
   end
   
   def ec2(instance_id)
-    Hugo::Aws::Ec2.find(instance, aws_access_key_id, aws_secret_access_key)
+    Hugo::Aws::Ec2.find(instance_id, @aws_access_key_id, @aws_secret_access_key)
   end
   
     
