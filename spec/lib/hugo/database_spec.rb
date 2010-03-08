@@ -94,7 +94,10 @@ describe Hugo::Database do
     db.name "mydb"
     db.user "admin"
     db.password "test"
+    db.aws_access_key_id '12'
+    db.aws_secret_access_key '34'
     db.deploy.should be_a_kind_of(Hugo::Database)
+    db.clear
   end
   
   it "should clear required attributes" do
@@ -123,12 +126,15 @@ describe Hugo::Database do
     db.name "mydb"
     db.user "admin"
     db.password "test"
+    db.aws_access_key_id '12'
+    db.aws_secret_access_key '34'
+    
     db.deploy
     db.info[:user].should == "user"
     db.info[:password].should == "test"
     db.info[:uri].should == "test.cwrzj6lxowfj.us-east-1.rds.amazonaws.com"
     db.info[:name].should == "mydb"
-
+    db.clear
   end
   
   

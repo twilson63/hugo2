@@ -48,6 +48,9 @@ class Hugo::Database
     @user = nil
     @password = nil
     @server = nil
+    @aws_access_key_id = nil
+    @aws_secret_access_key = nil
+    
   end
   
   def help
