@@ -1,6 +1,9 @@
-# Hugo (Cloud DSL) 0.1.10
-<small>A simple dsl to deploy to the cloud</small>
+# Hugo (Cloud DSL) 0.4.0
+<small>A simple dsl to deploy to the Amazon EC2 cloud</small>
 
+Deploy your your apps ready for scale!
+
+Hugo is a dsl interface built using the amazon-e2 gem, net/ssh and chef-solo.  It is opinionated as far as deployment frameworks go.  It is designed to launch an infrastructure built using Amazon RDS, Amazon ELB, and 1 - n Ubuntu 9.10 Application servers.  
 
 ## Install
 
@@ -25,6 +28,8 @@ Make sure you have a keypair generated for you AWS Account!
     
     Hugo do
       cloud "mycloud" do
+        aws_access_key_id ENV['AMAZON_ACCESS_KEY_ID']
+        aws_secret_access_key ENV['AMAZON_SECRET_ACCESS_KEY']
         
         database "sample_app_production" do
           server "company_server"

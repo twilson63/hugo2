@@ -16,8 +16,8 @@ begin
     gemspec.add_dependency('json')
     
     gemspec.name = "hugo"
-    gemspec.summary = "Deploy Your Rack Apps to Cloud"
-    gemspec.description = "Deploy your apps to the cloud."
+    gemspec.summary = "Deploy Your Rack Apps to EC2 Cloud"
+    gemspec.description = "Deploy your apps to the EC2 cloud."
     gemspec.email = "tom@jackhq.com"
     gemspec.homepage = "http://github.com/twilson63/hugo2"
     gemspec.authors = ["Tom Wilson", "Barrett Little"]
