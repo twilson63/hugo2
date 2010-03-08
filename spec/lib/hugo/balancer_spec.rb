@@ -9,9 +9,11 @@ describe "Hugo Balancer" do
     block = lambda do
       cloud "my_cloud" do 
         balancer do
-          aws_access_key_id "12"
-          aws_secret_access_key "12"
+          aws_access_key_id "12345"
+          aws_secret_access_key "123456"
+          
         end
+        
         
       end
     end
@@ -35,6 +37,8 @@ describe "Hugo Balancer" do
   it "should find or create balancer" do
     lb = Hugo::Balancer.instance
     lb.name "myserver"
+    lb.aws_access_key_id "12"
+    lb.aws_secret_access_key "12"
     lb.deploy.should be_a_kind_of(Hugo::Aws::Elb)
     
   end

@@ -8,6 +8,10 @@ describe "Hugo App" do
   it "should allow aws key and secret key overrides" do
     block = lambda do
       cloud "my_cloud" do 
+        clear
+        aws_access_key_id "12345"
+        aws_secret_access_key "123456"
+
         database "my_db" do
           server "my_server"
           user "hello"
@@ -18,8 +22,6 @@ describe "Hugo App" do
         
         app "testapp" do 
           clear
-          aws_access_key_id "12345"
-          aws_secret_access_key "123456"
           key_name "ec2-keypair"
           key_path "~/.ec2"
           cookbook "git@github.com:jackhq/hugo-cookbooks.git"
@@ -42,6 +44,10 @@ describe "Hugo App" do
     
     block = lambda do
       cloud "my_cloud" do 
+        clear
+        aws_access_key_id "12345"
+        aws_secret_access_key "123456"
+        
         database "my_db" do
           server "my_server"
           user "hello"
@@ -73,6 +79,10 @@ describe "Hugo App" do
     lambda do
       Hugo do
         cloud "my_cloud" do
+          clear
+          aws_access_key_id "12345"
+          aws_secret_access_key "123456"
+        
           app "testapp" do 
             clear
             key_path "~/.ec2"
@@ -89,6 +99,10 @@ describe "Hugo App" do
     lambda do
       Hugo do
         cloud "my_cloud" do
+          clear
+          aws_access_key_id "12345"
+          aws_secret_access_key "123456"
+        
           app "testapp" do 
             clear
             key_name "ec2-keypair"
@@ -105,6 +119,10 @@ describe "Hugo App" do
     lambda do
       Hugo do
         cloud "my_cloud" do
+          clear
+          aws_access_key_id "12345"
+          aws_secret_access_key "123456"
+        
           app "testapp" do 
             clear
             key_name "ec2-keypair"
@@ -121,9 +139,11 @@ describe "Hugo App" do
     lambda do
       Hugo do
         cloud "my_cloud" do
+          clear
+          aws_secret_access_key "123456"
+        
           app "testapp" do 
             clear
-            aws_secret_access_key "123456789"
             key_name "ec2-keypair"
             key_path "~/.ec2"
             cookbook "my_cookbook"
@@ -139,9 +159,12 @@ describe "Hugo App" do
     lambda do
       Hugo do
         cloud "my_cloud" do
+          clear
+
           app "testapp" do 
             clear
-            aws_access_key_id "123456789"
+            aws_access_key_id "12345"
+
             key_name "ec2-keypair"
             key_path "~/.ec2"
             cookbook "my_cookbook"

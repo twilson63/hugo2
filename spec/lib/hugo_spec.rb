@@ -54,6 +54,9 @@ describe "Hugo DSL" do
     block = lambda do
       
       cloud "gmms" do                 
+        aws_access_key_id "12345"
+        aws_secret_access_key "123456"
+        
         balancer 
         
         database "sentinel" do 

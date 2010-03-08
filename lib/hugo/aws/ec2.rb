@@ -10,7 +10,9 @@ module Hugo
       ZONE = "us-east-1c"
       TYPE = "m1.small"
   
-      attr_accessor :name, :uri, :type, :zone, :image_id, :key_name, :create_time, :status, :security_group, :aws_access_key_id, :aws_secret_access_key
+      attr_accessor :name, :uri, :type, :zone, :image_id, :key_name, 
+      :create_time, :status, :security_group, 
+      :aws_access_key_id, :aws_secret_access_key
 
       def initialize(options = {})
         set_attributes(options)

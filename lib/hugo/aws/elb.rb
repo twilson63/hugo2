@@ -94,7 +94,7 @@ module Hugo
       end
     
       def self.find_or_create(options)
-        self.find(options[:name]) || self.new(options).create
+        self.find(options[:name], options[:aws_access_key_id], options[:aws_secret_access_key]) || self.new(options).create
       end
       
     private

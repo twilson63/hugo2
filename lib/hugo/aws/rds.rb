@@ -9,7 +9,10 @@ module Hugo
       ZONE = "us-east-1c"
     
       attr_accessor :db, :uri, :server, :user, :password, :instance_class, 
-                    :zone, :size, :status, :create_time, :db_security_group
+                    :zone, :size, :status, :create_time, :db_security_group,
+                    :aws_access_key_id, :aws_secret_access_key
+                    
+                    
     
       def initialize(options={})
         # create instance
@@ -30,18 +33,14 @@ module Hugo
         if options["DBSecurityGroups"] and options["DBSecurityGroups"]["DBSecurityGroup"]
           @db_security_group = options["DBSecurityGroups"]["DBSecurityGroup"]["DBSecurityGroupName"] 
         end
+        @aws_access_key_id = options[:aws_access_key_id] || ACCESS_KEY
+        @aws_secret_access_key = options[:aws_secret_access_key] || SECRET_KEY
         
       end
     
       def create
-        @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)      
         
-        # TODO Create DB Security Group wheh Amazon Bug Fixed! -tnw
-        # if @db_security_group
-        #   find_or_create_db_security_group(@db_security_group, @db_security_group)
-        # end
-        
-        @rds.create_db_instance(
+        rds.create_db_instance(
           :db_instance_identifier => self.server,
           :allocated_storage => self.size,
           :db_instance_class => self.instance_class,
@@ -60,12 +59,11 @@ module Hugo
       end
     
       def destroy
-        @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)      
-        @rds.delete_db_instance(:db_instance_identifier => self.server, :skip_final_snapshot => true)
+        rds.delete_db_instance(:db_instance_identifier => self.server, :skip_final_snapshot => true)
       end
     
-      def self.all
-        @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+      def self.all(aws_access_key_id, aws_secret_access_key)
+        @rds = AWS::RDS::Base.new(:access_key_id => aws_access_key_id, :secret_access_key => aws_secret_access_key)
         instances = @rds.describe_db_instances.DescribeDBInstancesResult.DBInstances.DBInstance
       
         if instances.kind_of?(Array)
@@ -77,9 +75,9 @@ module Hugo
         end
       end
     
-      def self.find(instance)
+      def self.find(instance, aws_access_key_id, aws_secret_access_key)
         # find instance
-        @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+        @rds = AWS::RDS::Base.new(:access_key_id => aws_access_key_id, :secret_access_key => aws_secret_access_key)
         @rds_instance = @rds.describe_db_instances(:db_instance_identifier => instance)
         instance_desc = @rds_instance.DescribeDBInstancesResult.DBInstances.DBInstance  
         # initialize Hugo::Rds Object with instance hash
@@ -90,31 +88,36 @@ module Hugo
       end
 
       def self.find_or_create(options)
-        rds = self.find(options[:server]) || self.new(options).create
+        rds = self.find(options[:server], options[:aws_access_key_id], options[:aws_secret_access_key]) || self.new(options).create
         rds.db = options[:name]
         rds.password = options[:password]
         rds
       end
 
       def authorize_security_group(db_sec, ec2_sec, owner_id)
-        @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
-        @rds.authorize_db_security_group(:db_security_group_name => db_sec, :ec2_security_group_name => ec2_sec, :ec2_security_group_owner_id => owner_id)
+        #@rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+        rds.authorize_db_security_group(:db_security_group_name => db_sec, :ec2_security_group_name => ec2_sec, :ec2_security_group_owner_id => owner_id)
       end
     
       def find_or_create_db_security_group(name, description)
-        @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
+        #@rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
         begin
-          @security_groups = @rds.describe_db_security_groups(:db_security_group_name => name)
+          @security_groups = rds.describe_db_security_groups(:db_security_group_name => name)
         rescue
-          @security_groups = @rds.create_db_security_group(:db_security_group_name => name, :db_security_group_description => description)
+          @security_groups = rds.create_db_security_group(:db_security_group_name => name, :db_security_group_description => description)
         end
         #puts @security_groups
         @security_groups
       end
 
       def destroy_db_security_group(name)
-        @rds = AWS::RDS::Base.new(:access_key_id => ACCESS_KEY, :secret_access_key => SECRET_KEY)
-        @rds.delete_db_security_group(:db_security_group_name => name)
+        rds.delete_db_security_group(:db_security_group_name => name)
+      end
+    private
+      def rds
+        AWS::RDS::Base.new(
+          :access_key_id => self.aws_access_key_id, 
+          :secret_access_key => self.aws_secret_access_key)
       end
     end
   end

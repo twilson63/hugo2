@@ -52,6 +52,8 @@ describe "Hugo Database" do
     lambda do
       Hugo do
         cloud "my_cloud" do 
+          aws_access_key_id "12"
+          aws_secret_access_key "34"
           database "testapp" do 
             server "serverx"
             user "test_user"

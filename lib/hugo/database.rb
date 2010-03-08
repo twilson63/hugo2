@@ -25,6 +25,8 @@ class Hugo::Database
     raise ArgumentError, "database.server Required" unless server
     raise ArgumentError, "database.user Required" unless user
     raise ArgumentError, "database.password Required" unless password
+    raise ArgumentError, "database.aws_access_key_id Required" unless aws_access_key_id
+    raise ArgumentError, "database.aws_secret_access_key Required" unless aws_secret_access_key
     
     
     @rds = Hugo::Aws::Rds.find_or_create( :name => name,
@@ -33,7 +35,10 @@ class Hugo::Database
                               :password => password,
                               :size => size,
                               :zone => zone,
-                              :db_security_group => db_security_group
+                              :db_security_group => db_security_group,
+                              :aws_access_key_id => aws_access_key_id,
+                              :aws_secret_access_key => aws_secret_access_key
+                              
                                )
     self
   end
@@ -105,6 +110,16 @@ HELP
 
   def db_security_group(arg=nil)
     set_or_return(:db_security_group, arg, :kind_of => [String])     
+  end
+
+  # Aws Access Key for EC2 Deployment
+  def aws_access_key_id(arg=nil)
+    set_or_return(:aws_access_key_id, arg, :kind_of => [String]) 
+  end
+
+  # Aws Access Secret Key for EC2 Deployment
+  def aws_secret_access_key(arg=nil)
+    set_or_return(:aws_secret_access_key, arg, :kind_of => [String]) 
   end
     
 end

@@ -15,6 +15,8 @@ class Hugo::Cloud
     database.db_security_group name
     database.server name
     database.name db_name
+    database.aws_access_key_id(aws_access_key_id) if aws_access_key_id 
+    database.aws_secret_access_key(aws_secret_access_key) if aws_secret_access_key
     
     database.instance_eval(&block) if block_given? 
     db database.deploy 
@@ -24,6 +26,9 @@ class Hugo::Cloud
   def balancer(&block)
     balancer = Hugo::Balancer.instance
     balancer.name name
+    balancer.aws_access_key_id(aws_access_key_id) if aws_access_key_id 
+    balancer.aws_secret_access_key(aws_secret_access_key) if aws_secret_access_key
+    
     balancer.instance_eval(&block) if block_given? 
     lb balancer.deploy 
   end
@@ -31,6 +36,9 @@ class Hugo::Cloud
   def app(name, &block)
     app_info = Hugo::App.instance
     app_info.name name
+    app_info.aws_access_key_id(aws_access_key_id) if aws_access_key_id 
+    app_info.aws_secret_access_key(aws_secret_access_key) if aws_secret_access_key
+
     app_info.lb lb
     app_info.db db
     #app_info.cloud_name name
@@ -54,7 +62,11 @@ class Hugo::Cloud
     db.rds.destroy
   end
   
-  
+  def clear
+    aws_access_key_id(nil) 
+    aws_secret_access_key(nil)
+
+  end
     
   def print
     if db
@@ -120,6 +132,15 @@ REPORT
   end
   
   
+  # Aws Access Key for EC2 Deployment
+  def aws_access_key_id(arg=nil)
+    set_or_return(:aws_access_key_id, arg, :kind_of => [String]) 
+  end
+
+  # Aws Access Secret Key for EC2 Deployment
+  def aws_secret_access_key(arg=nil)
+    set_or_return(:aws_secret_access_key, arg, :kind_of => [String]) 
+  end
   
 
 
