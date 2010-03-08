@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{hugo}
-  s.version = "0.3.5"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Tom Wilson", "Barrett Little"]
-  s.date = %q{2010-03-05}
-  s.description = %q{Deploy your apps to the cloud.}
+  s.date = %q{2010-03-07}
+  s.description = %q{Deploy your apps to the EC2 cloud.}
   s.email = %q{tom@jackhq.com}
   s.files = [
     "Rakefile",
@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{Deploy Your Rack Apps to Cloud}
+  s.summary = %q{Deploy Your Rack Apps to EC2 Cloud}
   s.test_files = [
     "spec/lib/hugo/app_spec.rb",
      "spec/lib/hugo/aws/ec2_spec.rb",
